@@ -59,3 +59,11 @@ quality = [
   "pytest-cov>=5,<8",
   "ruff>=0.15,<1",
 ]
+
+# `uv sync` installs the `dev` group and no other, so a group named anything
+# else is a group a fresh clone does not get. Measured on the published tree:
+# `uv sync` reported "Installed 1 package" and both `pytest` and `baseline-py`
+# were then missing, which makes the one command the README gives a stranger
+# the command that cannot work.
+[tool.uv]
+default-groups = ["quality"]
