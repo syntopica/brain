@@ -1,0 +1,24 @@
+# Managed by baseline-py.
+schema-version = 1
+source-roots = ["tools"]
+test-roots = ["tests"]
+respect-gitignore = true
+coverage-threshold = 65
+
+[limits]
+max-file-lines = 150
+test-max-file-lines = 300
+
+[roles]
+data = [
+  "tools/eval/stop_words.py",
+  "tools/index/syntopica_config_schema.py",
+]
+registry = []
+entrypoint = [
+  "tools/eval/run.py",
+  "tools/graph/build.py",
+  "tools/index/build.py",
+]
+generated = []
+namespace-init = []

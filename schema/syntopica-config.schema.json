@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Syntopica data directory configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "instanceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "brain": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])"
+          }
+        },
+        "sources": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])"
+        },
+        "index": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])"
+        },
+        "ledger": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])"
+        }
+      },
+      "required": ["pages", "sources", "index", "ledger"]
+    },
+    "engines": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "brain": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "apiVersion": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": ["path", "apiVersion"]
+        },
+        "clips": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "apiVersion": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": ["path", "apiVersion"]
+        }
+      },
+      "required": ["brain", "clips"]
+    },
+    "clips": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "archive": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
+          "default": "clips"
+        },
+        "legacyArchive": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "default": null
+        },
+        "repositoryUrl": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "default": null
+        }
+      }
+    },
+    "mem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
+          "default": "mem"
+        }
+      }
+    },
+    "capture": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "origin": {
+          "format": "uri",
+          "type": ["string", "null"],
+          "pattern": "^https?://(?:[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?|\\[[A-Fa-f0-9:.]+\\])(?::[0-9]+)?/?(?![\\s\\S])",
+          "default": null
+        },
+        "mirror": {
+          "type": "boolean",
+          "default": false
+        },
+        "screeningScope": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "runners": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "synthesis": {
+          "type": ["string", "null"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual"],
+          "default": null
+        },
+        "grade": {
+          "type": ["string", "null"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual"],
+          "default": null
+        },
+        "triage": {
+          "type": ["string", "null"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual"],
+          "default": null
+        },
+        "triageRefiner": {
+          "type": ["string", "null"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual"],
+          "default": null
+        }
+      }
+    },
+    "browser": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "executable": {
+          "type": ["string", "null"],
+          "default": null
+        }
+      }
+    },
+    "newsletter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "acceptedSenders": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
+          "default": ".config/newsletter-accepted.json"
+        },
+        "rejectedSenders": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
+          "default": ".config/newsletter-rejected.json"
+        },
+        "rejectedBookingSenders": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
+          "default": ".config/newsletter-rejected-booking.json"
+        }
+      }
+    },
+    "projects": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "roots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "aliases": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
+          "default": ".config/project-aliases.json"
+        }
+      }
+    },
+    "sessions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "desktopRoots": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": []
+        }
+      }
+    }
+  },
+  "required": ["schemaVersion", "instanceId", "brain", "engines"]
+}

@@ -1,0 +1,103 @@
+# Ground truth for the retrieval eval: a question, and the pages that should
+# answer it. Hand-written on 2026-08-04, not generated - a set generated from
+# the pages measures whether the generator read the same page twice.
+#
+# `expected_pages = []` is a refusal case: the wiki holds nothing on it, and a
+# baseline that returns five confident pages anyway has failed. Those are the
+# questions that make the number mean something, so keep some.
+#
+# Three questions deliberately target pages that link to no other page, which
+# `tools/graph/build.py` reports 14 of. Link-following retrieval is weakest
+# there by construction, and a set without them would flatter the graph.
+
+[[query]]
+question = "How do I sign an AEAT filing without AutoFirma?"
+expected_pages = ["business/pyfirma"]
+
+[[query]]
+question = "Which entities owe money to AEAT and TGSS, and what deferrals are agreed?"
+expected_pages = ["business/tax-debts"]
+
+[[query]]
+question = "Where are the Supabase project refs and access tokens kept?"
+expected_pages = ["business/supabase"]
+
+[[query]]
+question = "How do I read AEAT debts and match an NRC over curl with a certificate?"
+expected_pages = ["topics/aeat-debts-headless"]
+
+[[query]]
+question = "What is the four-hop SAML chain for Social Security?"
+expected_pages = ["topics/tgss-headless"]
+
+[[query]]
+question = "Where does the CaixaBank CSV buffer live and how are card movements merged?"
+expected_pages = ["business/bank-movements"]
+
+[[query]]
+question = "What are the Modelo 303 figures for the Q2 2026 close?"
+expected_pages = ["business/quarter-close"]
+
+[[query]]
+question = "What are the repeatable steps for closing a quarter?"
+expected_pages = ["business/quarter-close-playbook"]
+
+[[query]]
+question = "Which site in the portfolio is still on Drupal 7?"
+expected_pages = ["projects/enlima"]
+
+[[query]]
+question = "How does the Chrome extension clip a page into the clip store?"
+expected_pages = ["projects/brain-clipper"]
+
+[[query]]
+question = "Which extraction library does the clipper use and what is its DOM mutation trap?"
+expected_pages = ["topics/readability"]
+
+[[query]]
+question = "Why is this brain a wiki rather than a RAG index?"
+expected_pages = ["topics/llm-wiki"]
+
+[[query]]
+question = "Which vector index is eight times smaller than float32?"
+expected_pages = ["topics/turbovec"]
+
+[[query]]
+question = "What syncs DNS from cPanel to Cloudflare in real time?"
+expected_pages = ["projects/zonemirror"]
+
+[[query]]
+question = "Which tool combines OV2 POI radar databases for Spain and Portugal?"
+expected_pages = ["projects/poitools"]
+
+[[query]]
+question = "Which project does self-hosted DMARC observability?"
+expected_pages = ["projects/vexa"]
+
+[[query]]
+question = "Where are the Staffbase widget API tokens and dev logins?"
+expected_pages = ["business/staffbase"]
+
+[[query]]
+question = "What did the Segunda Oportunidad exoneration ruling decide?"
+expected_pages = ["business/reset-programa"]
+
+[[query]]
+question = "Which models run on owned hardware here, and at what quantization?"
+expected_pages = ["topics/local-llm-stack"]
+
+[[query]]
+question = "What do Opus 5 and GPT-5.6 want removed from prompts written for older models?"
+expected_pages = ["topics/frontier-model-prompting"]
+
+[[query]]
+question = "How many domains are in the portfolio and who registers them?"
+expected_pages = ["business/domains"]
+
+[[query]]
+question = "What was the score of the 2026 Champions League final?"
+expected_pages = []
+
+[[query]]
+question = "Which dentist did the family visit in March?"
+expected_pages = []
