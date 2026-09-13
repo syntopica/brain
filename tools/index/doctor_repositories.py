@@ -8,7 +8,7 @@ from tools.index.validate_syntopica_git_roots import validate_syntopica_git_root
 
 
 def doctor_repositories(root: Path, config: SyntopicaConfig) -> tuple[bool, str]:
-    """Reuse the contract's exact temporary monorepo exception."""
+    """Require independent data and engine repository identities."""
     try:
         validate_syntopica_git_roots(
             (root.resolve(), config.archive, config.brain_path, config.clips_path)

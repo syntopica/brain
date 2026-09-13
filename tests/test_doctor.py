@@ -116,16 +116,15 @@ def test_shared_git_roots_explain_the_failure(
     assert "distinct Git roots" in capsys.readouterr().out
 
 
-def test_exact_monorepo_exception_remains_valid(
+def test_both_engines_sharing_data_are_rejected(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     root = make_data_directory(tmp_path)
     (root / "syntopica.local.json").write_text(
         json.dumps({"engines": {"brain": {"path": "."}, "clips": {"path": "."}}})
     )
-    with patch("tools.index.doctor_executables.shutil.which", return_value="/synthetic/bin/tool"):
-        assert doctor_report(root, {}) == 0
-    assert "PASS repositories" in capsys.readouterr().out
+    assert doctor_report(root, {}) == 1
+    assert "distinct Git roots" in capsys.readouterr().out
 
 
 @pytest.mark.parametrize(

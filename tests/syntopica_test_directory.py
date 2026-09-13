@@ -1,4 +1,4 @@
-"""Build four isolated repositories for configuration tests."""
+"""Build a data repository with an archive and two isolated engine repositories."""
 
 from __future__ import annotations
 
@@ -9,11 +9,12 @@ from tests.syntopica_git import syntopica_git
 
 
 def syntopica_test_directory(tmp_path: Path) -> tuple[Path, dict[str, object]]:
-    """Create synthetic data, archive and engine roots without any commits."""
+    """Create synthetic data and engine roots with an ordinary archive directory."""
     root = tmp_path / "data"
-    for path in (root, root / "clips", tmp_path / "engine-brain", tmp_path / "engine-clips"):
+    for path in (root, tmp_path / "engine-brain", tmp_path / "engine-clips"):
         path.mkdir(parents=True, exist_ok=True)
         syntopica_git(path, "init", "-q")
+    (root / "clips").mkdir()
     document: dict[str, object] = {
         "schemaVersion": 1,
         "instanceId": "fixture",

@@ -23,8 +23,10 @@ def test_fixture_config_validates_and_loads(tmp_path: Path) -> None:
     assert config.index == root / "brain/index.md"
     assert config.index.is_file()
     assert (root / "mem").is_dir()
-    roots = (root, config.archive, config.brain_path, config.clips_path)
-    assert len(set(roots)) == 4
+    roots = (root, config.brain_path, config.clips_path)
+    assert len(set(roots)) == 3
+    assert config.archive.is_relative_to(root)
+    assert not (config.archive / ".git").exists()
     for repository in roots:
         assert (
             Path(syntopica_git(repository, "rev-parse", "--show-toplevel").stdout.strip())

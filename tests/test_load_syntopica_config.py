@@ -86,10 +86,9 @@ def test_symlink_page_cannot_escape(tmp_path: Path) -> None:
         ("archive", "brain"),
         ("archive", "clips"),
         ("brain", "clips"),
-        ("data", "archive"),
     ],
 )
-def test_all_four_git_roots_must_differ(tmp_path: Path, first: str, second: str) -> None:
+def test_engine_git_roots_must_differ(tmp_path: Path, first: str, second: str) -> None:
     root, document = syntopica_test_directory(tmp_path)
     paths = {
         "data": ".",
@@ -97,12 +96,9 @@ def test_all_four_git_roots_must_differ(tmp_path: Path, first: str, second: str)
         "brain": "../engine-brain",
         "clips": "../engine-clips",
     }
-    if second == "archive":
-        document["clips"] = {"archive": "."}
-    else:
-        cast(dict[str, dict[str, object]], document["engines"])[second]["path"] = paths[first]
+    cast(dict[str, dict[str, object]], document["engines"])[second]["path"] = paths[first]
     _write(root, document)
-    with pytest.raises(InvalidSyntopicaConfigError, match="distinct"):
+    with pytest.raises(InvalidSyntopicaConfigError, match=r"distinct|Git worktree root"):
         load_syntopica_config(root, {})
 
 
@@ -274,13 +270,20 @@ def test_invalid_json_is_a_config_error(tmp_path: Path, text: str) -> None:
         load_syntopica_config(root, {})
 
 
-def test_both_engines_may_temporarily_be_the_data_root(tmp_path: Path) -> None:
+def test_both_engines_cannot_be_the_data_root(tmp_path: Path) -> None:
     root, document = syntopica_test_directory(tmp_path)
     document["engines"] = {
         "brain": {"path": ".", "apiVersion": 1},
         "clips": {"path": ".", "apiVersion": 1},
     }
     _write(root, document)
-    config = load_syntopica_config(root, {})
-    assert config.brain_path == config.clips_path == root
-    assert config.archive == root / "clips"
+    with pytest.raises(InvalidSyntopicaConfigError, match="distinct Git roots"):
+        load_syntopica_config(root, {})
+
+
+@pytest.mark.parametrize("archive", [".", "clips"])
+def test_archive_can_share_data_root(tmp_path: Path, archive: str) -> None:
+    root, document = syntopica_test_directory(tmp_path)
+    document["clips"] = {"archive": archive}
+    _write(root, document)
+    assert load_syntopica_config(root, {}).archive == (root / archive).resolve()
