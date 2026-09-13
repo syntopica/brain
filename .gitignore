@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+.coverage
+coverage/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+# The instance the engine is being run against, and any local overlay of it.
+ci-instance/
+syntopica.local.json

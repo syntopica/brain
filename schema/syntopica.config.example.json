@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "instanceId": "owner",
+  "brain": {
+    "pages": [
+      "brain/topics",
+      "brain/projects",
+      "brain/business",
+      "brain/personal",
+      "brain/people"
+    ],
+    "sources": "brain/sources",
+    "index": "brain/index.md",
+    "ledger": "brain/.ingest"
+  },
+  "clips": {
+    "archive": "clips"
+  },
+  "mem": {
+    "path": "mem"
+  },
+  "engines": {
+    "brain": {
+      "path": "../syntopica-brain",
+      "apiVersion": 1
+    },
+    "clips": {
+      "path": "../syntopica-clips",
+      "apiVersion": 1
+    }
+  },
+  "capture": {
+    "origin": null,
+    "mirror": false
+  },
+  "runners": {
+    "synthesis": null,
+    "grade": null,
+    "triage": null,
+    "triageRefiner": null
+  },
+  "browser": {
+    "executable": null
+  },
+  "newsletter": {
+    "acceptedSenders": ".config/newsletter-accepted.json",
+    "rejectedSenders": ".config/newsletter-rejected.json",
+    "rejectedBookingSenders": ".config/newsletter-rejected-booking.json"
+  },
+  "projects": {
+    "roots": [],
+    "aliases": ".config/project-aliases.json"
+  }
+}
