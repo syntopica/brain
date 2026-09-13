@@ -26,13 +26,13 @@ def make_data_directory(root: Path, pages: Mapping[str, str] | None = None) -> P
     # resolve for real; where none does, it is an empty repository carrying only
     # the schema, which is all a path-shape test needs.
     engine = brain_engine_path(Path(__file__).resolve().parents[2])
-    repositories = [data, data / "clips", root / "engine-clips"]
+    repositories = [data, root / "engine-clips"]
     if engine is None:
         repositories.append(root / "engine-brain")
     for repository in repositories:
         repository.mkdir(parents=True, exist_ok=True)
         syntopica_git(repository, "init", "--quiet", "--template=", "--initial-branch=main")
-    for directory in ("brain", "brain/captures", "brain/.ingest", "mem"):
+    for directory in ("brain", "brain/captures", "brain/.ingest", "mem", "clips"):
         (data / directory).mkdir(parents=True, exist_ok=True)
     if engine is None:
         (root / "engine-brain/schema").mkdir(parents=True, exist_ok=True)
