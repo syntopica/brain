@@ -27,8 +27,9 @@ class SyntopicaConfig:
     browser: str | None
     brain_api_version: int = 1
     clips_api_version: int = 1
-    configured_paths: tuple[Path, ...] = ()
+    configured_paths: tuple[Path, ...] = ()  # Paths whose absence is a finding.
     legacy_archive: Path | None = None
     repository_url: str | None = None
     screening_scope: str = ""
     desktop_roots: tuple[Path, ...] = ()
+    state_paths: tuple[Path, ...] = ()
