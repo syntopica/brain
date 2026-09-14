@@ -7,6 +7,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import cast
 
+from tools.index.classify_syntopica_paths import classify_syntopica_paths
 from tools.index.invalid_syntopica_config_error import InvalidSyntopicaConfigError
 from tools.index.merge_config_overrides import merge_config_overrides
 from tools.index.merge_syntopica_documents import merge_syntopica_documents
@@ -43,6 +44,7 @@ def load_syntopica_config(root: Path, environ: Mapping[str, str]) -> SyntopicaCo
     validate_syntopica_schema(document)
     validate_syntopica_urls(document)
     paths = resolve_syntopica_paths(document, origins, root)
+    path_kinds = classify_syntopica_paths(paths)
     archive = paths[("clips", "archive")][0]
     brain_path = paths[("engines", "brain", "path")][0]
     clips_path = paths[("engines", "clips", "path")][0]
@@ -57,7 +59,8 @@ def load_syntopica_config(root: Path, environ: Mapping[str, str]) -> SyntopicaCo
         data_root=root,
         brain_api_version=cast(int, engines["brain"]["apiVersion"]),
         clips_api_version=cast(int, engines["clips"]["apiVersion"]),
-        configured_paths=tuple(path for values in paths.values() for path in values),
+        configured_paths=path_kinds["required"],
+        state_paths=path_kinds["state"],
         schema_version=int(cast(int, document["schemaVersion"])),
         instance_id=cast(str, document["instanceId"]),
         pages=paths[("brain", "pages")],

@@ -37,6 +37,7 @@ def validate_syntopica_schema(
         "minLength",
         "pattern",
         "format",
+        "x-path-kind",
     }
     if schema.keys() - supported:
         raise InvalidSyntopicaConfigError("Unsupported configuration schema keyword")
