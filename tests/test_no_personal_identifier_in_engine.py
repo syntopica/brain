@@ -7,18 +7,28 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-ENGINE = (
-    "tools/clips/src",
-    "tools/graph",
-    "tools/index",
-    "tools/eval",
-    "tools/capture",
-    "tools/review",
-    "tools/sessions",
-    "tools/chatgpt",
-    "tools/review-pass",
-    "tools/projects",
-    "tests",
+
+# Every tracked file is scanned. An explicit path list was tried first and
+# failed the way path lists do: it named the pre-split monorepo layout
+# (`tools/clips/src`, `tools/capture`, `tools/sessions`, ...), seven of whose
+# eleven entries stopped existing when the engine was split out. `git ls-files`
+# reports nothing for a path that is gone, so the guard kept passing while
+# covering four directories and none of `bin/`, `docs/`, `schema/`, the root
+# documents, or `tools/office`, which arrived later. A list that silently stops
+# matching is worse than no list, because it reads as a green check.
+ALLOWED = frozenset(
+    {
+        # The copyright holder is the author, which is what a LICENSE is for.
+        "LICENSE",
+        # Both name the baseline-py dependency, which is published on PyPI
+        # under its original scope. A package name is not instance data, and
+        # renaming a published distribution is a separate decision. This file
+        # deliberately does not spell that name: it is scanned like every
+        # other, and exempting the guard from itself would be the one hole
+        # nothing else can catch.
+        "pyproject.toml",
+        "uv.lock",
+    }
 )
 
 
@@ -30,7 +40,7 @@ def test_no_personal_identifier_in_engine() -> None:
     # ignored working copy - a rendered launchd job, a local override - is this
     # machine's, never the engine's.
     listed = subprocess.run(
-        ["git", "ls-files", "-z", "--", *ENGINE],
+        ["git", "ls-files", "-z"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -38,7 +48,12 @@ def test_no_personal_identifier_in_engine() -> None:
     )
     # A deletion staged later in the split leaves its name in the index while
     # the file is already gone, and ripgrep fails rather than skipping it.
-    files = [name for name in listed.stdout.split("\0") if name and (ROOT / name).exists()]
+    files = [
+        name
+        for name in listed.stdout.split("\0")
+        if name and name not in ALLOWED and (ROOT / name).exists()
+    ]
+    assert files, "no tracked files to scan: the guard would pass vacuously"
     result = subprocess.run(
         ["rg", "-a", "-l", "-i", "-f", patterns, *files],
         cwd=ROOT,
