@@ -20,6 +20,7 @@ def resolve_syntopica_paths(
         ("brain", "ledger"),
         ("clips", "archive"),
         ("atrium", "path"),
+        ("conversations", "path"),
         ("engines", "brain", "path"),
         ("engines", "clips", "path"),
         ("newsletter", "acceptedSenders"),

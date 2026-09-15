@@ -19,6 +19,9 @@
   "atrium": {
     "path": "atrium"
   },
+  "conversations": {
+    "path": "conversations"
+  },
   "engines": {
     "brain": {
       "path": "../syntopica-brain",

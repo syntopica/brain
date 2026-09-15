@@ -123,6 +123,20 @@
         }
       }
     },
+    "conversations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "x-path-kind": "state",
+          "description": "Canonical conversation archive written by the rocket-agents export; absence is normal on a fresh instance.",
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
+          "default": "conversations"
+        }
+      }
+    },
     "capture": {
       "type": "object",
       "additionalProperties": false,

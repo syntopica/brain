@@ -23,6 +23,7 @@ def test_fixture_config_validates_and_loads(tmp_path: Path) -> None:
     assert config.index == root / "brain/index.md"
     assert config.index.is_file()
     assert (root / "atrium").is_dir()
+    assert (root / "conversations").is_dir()
     roots = (root, config.brain_path, config.clips_path)
     assert len(set(roots)) == 3
     assert config.archive.is_relative_to(root)
