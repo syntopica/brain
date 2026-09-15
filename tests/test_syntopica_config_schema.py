@@ -61,6 +61,7 @@ def test_schema_accepts_the_shipped_example() -> None:
         "projects",
         "clips",
         "atrium",
+        "conversations",
     ],
 )
 def test_schema_rejects_unknown_key(section: str | None) -> None:
@@ -82,6 +83,7 @@ def test_schema_rejects_unknown_key(section: str | None) -> None:
         ("brain", "ledger"),
         ("clips", "archive"),
         ("atrium", "path"),
+        ("conversations", "path"),
         ("newsletter", "acceptedSenders"),
         ("newsletter", "rejectedSenders"),
         ("newsletter", "rejectedBookingSenders"),
