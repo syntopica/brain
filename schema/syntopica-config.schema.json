@@ -96,13 +96,15 @@
           "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
           "default": "clips"
         },
-        "legacyArchive": {
-          "x-path-kind": "required",
+        "inbox": {
+          "x-path-kind": "state",
+          "description": "Checkout of the repository the browser clipper commits to; `clips pull` clones it on first use and hands its pending clips to the archive. Absence is normal until then, and null means this instance has no browser clipper.",
           "type": ["string", "null"],
           "minLength": 1,
           "default": null
         },
-        "repositoryUrl": {
+        "inboxRepositoryUrl": {
+          "description": "Where `clips pull` clones the inbox from.",
           "type": ["string", "null"],
           "minLength": 1,
           "default": null

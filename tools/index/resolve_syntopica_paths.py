@@ -29,7 +29,7 @@ def resolve_syntopica_paths(
         ("projects", "aliases"),
         ("projects", "roots"),
         ("sessions", "desktopRoots"),
-        ("clips", "legacyArchive"),
+        ("clips", "inbox"),
     )
     result: dict[tuple[str, ...], tuple[Path, ...]] = {}
     for field in fields:
@@ -47,7 +47,7 @@ def resolve_syntopica_paths(
         contained = field[0] != "engines" and field not in (
             ("projects", "roots"),
             ("sessions", "desktopRoots"),
-            ("clips", "legacyArchive"),
+            ("clips", "inbox"),
         )
         if contained and any(not path.is_relative_to(root) for path in resolved):
             raise InvalidSyntopicaConfigError(f"{'.'.join(field)} escapes the data directory")

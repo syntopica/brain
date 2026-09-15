@@ -68,9 +68,9 @@ def load_syntopica_config(root: Path, environ: Mapping[str, str]) -> SyntopicaCo
         index=paths[("brain", "index")][0],
         ledger=paths[("brain", "ledger")][0],
         archive=archive,
-        legacy_archive=next(iter(paths[("clips", "legacyArchive")]), None),
-        repository_url=cast(
-            str | None, cast(Mapping[str, object], document["clips"])["repositoryUrl"]
+        inbox=next(iter(paths[("clips", "inbox")]), None),
+        inbox_repository_url=cast(
+            str | None, cast(Mapping[str, object], document["clips"])["inboxRepositoryUrl"]
         ),
         screening_scope=cast(str, capture["screeningScope"]),
         desktop_roots=paths[("sessions", "desktopRoots")],
