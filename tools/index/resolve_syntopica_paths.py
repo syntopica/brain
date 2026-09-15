@@ -19,7 +19,7 @@ def resolve_syntopica_paths(
         ("brain", "index"),
         ("brain", "ledger"),
         ("clips", "archive"),
-        ("mem", "path"),
+        ("atrium", "path"),
         ("engines", "brain", "path"),
         ("engines", "clips", "path"),
         ("newsletter", "acceptedSenders"),

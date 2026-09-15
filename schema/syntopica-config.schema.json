@@ -109,17 +109,17 @@
         }
       }
     },
-    "mem": {
+    "atrium": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "path": {
           "x-path-kind": "state",
-          "description": "Agent-memory state created by its writer on demand; absence is normal on a fresh instance.",
+          "description": "Atrium state created by the atrium CLI on demand; absence is normal on a fresh instance.",
           "type": "string",
           "minLength": 1,
           "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
-          "default": "mem"
+          "default": "atrium"
         }
       }
     },

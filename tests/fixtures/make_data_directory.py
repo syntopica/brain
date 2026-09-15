@@ -32,7 +32,7 @@ def make_data_directory(root: Path, pages: Mapping[str, str] | None = None) -> P
     for repository in repositories:
         repository.mkdir(parents=True, exist_ok=True)
         syntopica_git(repository, "init", "--quiet", "--template=", "--initial-branch=main")
-    for directory in ("brain", "brain/captures", "brain/.ingest", "mem", "clips"):
+    for directory in ("brain", "brain/captures", "brain/.ingest", "atrium", "clips"):
         (data / directory).mkdir(parents=True, exist_ok=True)
     if engine is None:
         (root / "engine-brain/schema").mkdir(parents=True, exist_ok=True)
@@ -79,7 +79,7 @@ def make_data_directory(root: Path, pages: Mapping[str, str] | None = None) -> P
             "ledger": "brain/.ingest",
         },
         "clips": {"archive": "clips"},
-        "mem": {"path": "mem"},
+        "atrium": {"path": "atrium"},
         "engines": {
             "brain": {"path": "../engine-brain", "apiVersion": 1},
             "clips": {"path": "../engine-clips", "apiVersion": 1},

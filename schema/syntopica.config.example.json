@@ -16,8 +16,8 @@
   "clips": {
     "archive": "clips"
   },
-  "mem": {
-    "path": "mem"
+  "atrium": {
+    "path": "atrium"
   },
   "engines": {
     "brain": {
