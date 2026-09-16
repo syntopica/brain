@@ -34,9 +34,9 @@ Two consequences worth stating, because both were learned the expensive way:
 
 One exported unit per file, one responsibility per unit, and every dependency an
 explicit import. A helper gets its own file rather than living beside its
-caller. `baseline-py` enforces this: BPY001 is one primary unit per module and
+caller. `codeality-py` enforces this: BPY001 is one primary unit per module and
 BPY002 is that the unit matches the file name, with a `[roles]` declaration in
-`baseline-py.toml` for a script whose unit is `main`.
+`codeality-py.toml` for a script whose unit is `main`.
 
 Prefer a role to a suppression. A role explains what a file is; a suppression
 silences the question.
@@ -61,7 +61,7 @@ point: without it a command run inside one instance can silently read another.
 
 ```bash
 uv sync
-uv run baseline-py gate        # ruff, ruff format, mypy, baseline, deptry, pip-audit, pytest
+uv run codeality-py gate        # ruff, ruff format, mypy, baseline, deptry, pip-audit, pytest
 uv run pytest -q
 ```
 

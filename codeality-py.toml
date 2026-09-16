@@ -1,4 +1,4 @@
-# Managed by baseline-py.
+# Managed by codeality-py.
 schema-version = 1
 source-roots = ["tools"]
 test-roots = ["tests"]

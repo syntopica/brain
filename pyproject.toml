@@ -51,7 +51,7 @@ fail_under = 19
 
 [dependency-groups]
 quality = [
-  "busirocket-baseline-py>=0.1,<1",
+  "syntopica-codeality-py>=0.1,<1",
   "deptry>=0.20,<1",
   "mypy>=1.11,<2",
   "pip-audit>=2.7,<3",
@@ -62,7 +62,7 @@ quality = [
 
 # `uv sync` installs the `dev` group and no other, so a group named anything
 # else is a group a fresh clone does not get. Measured on the published tree:
-# `uv sync` reported "Installed 1 package" and both `pytest` and `baseline-py`
+# `uv sync` reported "Installed 1 package" and both `pytest` and `codeality-py`
 # were then missing, which makes the one command the README gives a stranger
 # the command that cannot work.
 [tool.uv]
