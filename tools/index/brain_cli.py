@@ -20,7 +20,7 @@ def brain_cli(argv: list[str] | None = None) -> int:
     """Resolve instance selection once, preserving subcommand arguments."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", metavar="PATH")
-    parser.add_argument("command", choices=("index", "graph", "lint", "doctor"))
+    parser.add_argument("command", choices=("index", "graph", "lint", "doctor", "find"))
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
     args = parser.parse_args(argv)
     try:

@@ -15,6 +15,11 @@ against.
 
 - **`brain index`** rebuilds `index.md` from every page's `summary:` line, so
   the map is derived from the pages rather than maintained beside them.
+- **`brain find`** answers where a question is already answered: the ranked
+  pages, and on each one the heading and the line that carried the words. The
+  same model-free keyword baseline `tools/eval` measures, over the configured
+  page directories only -- so it never walks the captures beside them, which is
+  what makes `grep -r` unusable once a wiki has an archive.
 - **`brain graph`** builds the link graph: orphans, dangling links, clusters
   reachable from nothing, and related-but-unlinked pairs scored by shared
   vocabulary. It writes an HTML viewer alongside the report.
