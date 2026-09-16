@@ -30,6 +30,14 @@
     "clips": {
       "path": "../syntopica-clips",
       "apiVersion": 1
+    },
+    "atrium": {
+      "path": "../syntopica-atrium",
+      "apiVersion": 1
+    },
+    "agents": {
+      "path": "../syntopica-agents",
+      "apiVersion": 1
     }
   },
   "capture": {
