@@ -48,17 +48,17 @@ def main(argv: list[str] | None = None) -> int:
         print(str(error), file=sys.stderr)
         return 1
     base = config.index.parent
-    directories = tuple(directory.name for directory in ordered_page_directories(config.pages))
     question = " ".join(args.query)
-    pages = load_pages(base, directories)
+    pages = load_pages(base, ordered_page_directories(config.pages))
     terms = query_terms(question)
     hits: list[dict[str, str | int]] = []
     for page_id in top_pages(keyword_scores(question, pages), args.limit):
-        heading, line, text = matching_section(pages[page_id]["body"], terms)
+        page = pages[page_id]
+        heading, line, text = matching_section(page["text"], terms)
         hits.append(
             {
-                "page": f"{os.path.relpath(base, Path.cwd())}/{page_id}.md",
-                "title": pages[page_id]["title"],
+                "page": os.path.relpath(page["path"], Path.cwd()),
+                "title": page["title"],
                 "heading": heading,
                 "line": line,
                 "text": text,

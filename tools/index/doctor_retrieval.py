@@ -25,4 +25,11 @@ def doctor_retrieval(config: SyntopicaConfig) -> tuple[bool, str]:
             f"retrieval: keyword only (`brain find`); atrium is configured at {path} "
             "but the checkout is absent"
         )
-    return True, "retrieval: keyword (`brain find`) and semantic (atrium)"
+    # A checkout is a declaration, not a working index: atrium builds its own
+    # state on demand, and whether it holds vectors for these pages is atrium's
+    # question to answer, not this engine's. So the line says configured, and
+    # names the command that says ready (raised by review, 2026-09-16).
+    return True, (
+        "retrieval: keyword (`brain find`) and semantic (atrium configured at "
+        f"{path}); run `atrium status` for whether its index is built"
+    )
