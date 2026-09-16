@@ -142,7 +142,10 @@ degrades into stray dollar signs mid-sentence is worse than one on its own line.
 
 ### Links
 
-`[[page-name]]` links a page by its filename without the extension.
+`[[dir/page-name]]` links a page by its path from the data directory, without
+the extension: `[[pages/decisions]]` for `pages/decisions.md`. The graph and
+lint scanners ignore a target with no `/` in it, so a bare `[[page-name]]`
+creates neither an edge nor a dangling-link warning.
 `brain graph` reads them: a link to a page that does not exist is reported as
 dangling, a page nothing links to is an orphan, and a cluster reachable from
 nothing else is reported as its own component. A new page that only the index
