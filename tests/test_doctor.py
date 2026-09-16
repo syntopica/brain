@@ -10,13 +10,15 @@ import pytest
 from tests.fixtures.make_data_directory import make_data_directory
 from tests.syntopica_git import syntopica_git
 from tools.index.doctor_report import doctor_report
+from tools.index.doctor_retrieval import doctor_retrieval
+from tools.index.load_syntopica_config import load_syntopica_config
 
 
 def test_healthy_instance(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     root = make_data_directory(tmp_path)
     with patch("tools.index.doctor_executables.shutil.which", return_value="/synthetic/bin/tool"):
         assert doctor_report(root, {}) == 0
-    assert len(capsys.readouterr().out.splitlines()) == 7
+    assert len(capsys.readouterr().out.splitlines()) == 8
 
 
 @pytest.mark.parametrize(
@@ -181,3 +183,27 @@ def test_declared_atrium_checkout_must_exist(
     with patch("tools.index.doctor_executables.shutil.which", return_value="/synthetic/bin/tool"):
         assert doctor_report(root, {}) == 1
     assert "FAIL" in capsys.readouterr().out
+
+
+def test_doctor_says_keyword_only_when_no_atrium_engine_is_configured(tmp_path: Path) -> None:
+    """A wiki with no semantic lane is supported; assuming it has one is not."""
+    root = make_data_directory(tmp_path)
+    config = load_syntopica_config(root, {})
+    assert config.atrium_path is None
+    passed, message = doctor_retrieval(config)
+    assert passed
+    assert "keyword only" in message
+
+
+def test_doctor_reports_semantic_once_atrium_is_configured(tmp_path: Path) -> None:
+    root = make_data_directory(tmp_path)
+    atrium = tmp_path / "engine-atrium"
+    atrium.mkdir(exist_ok=True)
+    # A declared engine path must be a repository root, like every other one.
+    syntopica_git(atrium, "init", "--quiet", "--template=", "--initial-branch=main")
+    document = json.loads((root / "syntopica.config.json").read_text())
+    document["engines"]["atrium"] = {"path": "../engine-atrium", "apiVersion": 1}
+    (root / "syntopica.config.json").write_text(json.dumps(document))
+    passed, message = doctor_retrieval(load_syntopica_config(root, {}))
+    assert passed
+    assert "semantic (atrium)" in message

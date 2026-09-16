@@ -9,6 +9,7 @@ from tools.index.doctor_credentials import doctor_credentials
 from tools.index.doctor_executables import doctor_executables
 from tools.index.doctor_paths import doctor_paths
 from tools.index.doctor_repositories import doctor_repositories
+from tools.index.doctor_retrieval import doctor_retrieval
 from tools.index.invalid_syntopica_config_error import InvalidSyntopicaConfigError
 from tools.index.load_syntopica_config import load_syntopica_config
 
@@ -28,6 +29,7 @@ def doctor_report(root: Path, environ: Mapping[str, str]) -> int:
         doctor_paths(config),
         doctor_repositories(root, config),
         doctor_archive(config.archive),
+        doctor_retrieval(config),
         doctor_api(config),
         doctor_executables(config, environ),
         doctor_credentials(config, environ),
