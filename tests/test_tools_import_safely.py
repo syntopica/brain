@@ -21,7 +21,7 @@ from tests.tool_paths import tool_paths
 # Needs the memstore package, which is a separate project this repository
 # only drives; there is nothing to install here.
 NEEDS_MEMSTORE = "tools/memstore/"
-# Puts ~/p/toolkit on sys.path and imports its signer: a separate checkout,
+# Puts a sibling toolkit checkout on sys.path and imports its signer: a separate checkout,
 # not a package, so a machine without it cannot import this tool at all.
 NEEDS_TOOLKIT_CHECKOUT = "tools/toolkit/"
 # A missing third-party module means an extra is not installed on this machine,
