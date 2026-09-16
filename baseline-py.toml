@@ -17,6 +17,7 @@ data = [
 registry = []
 entrypoint = [
   "tools/eval/run.py",
+  "tools/find/build.py",
   "tools/graph/build.py",
   "tools/index/build.py",
 ]

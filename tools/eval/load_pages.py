@@ -13,8 +13,13 @@ SUMMARY = re.compile(r"^summary:\s*(.+)$", re.M)
 TITLE = re.compile(r"^title:\s*(.+)$", re.M)
 
 
-def load_pages(root: Path) -> dict[str, "Page"]:
+def load_pages(root: Path, directories: tuple[str, ...] = tuple(PAGE_DIRS)) -> dict[str, "Page"]:
     """Read every scored page under `root`, keyed by page id.
+
+    ``directories`` defaults to this wiki's established sections so the eval
+    baseline keeps reading exactly what it always read; `brain find` passes the
+    configured ones instead, so a wiki with its own folders is searchable
+    without a second page loader drifting beside this one.
 
     Keyed by page id (`topics/llm-wiki`), the same id `queries.toml` names
     and `tools/graph/build.py` uses, so a ground-truth entry and a graph finding
@@ -31,7 +36,7 @@ def load_pages(root: Path) -> dict[str, "Page"]:
     ordering would not be scoring the discipline the wiki actually states.
     """
     pages: dict[str, Page] = {}
-    for directory in PAGE_DIRS:
+    for directory in directories:
         for path in sorted((root / directory).glob("*.md")):
             page_id = f"{directory}/{path.stem}"
             text = path.read_text(encoding="utf-8")
