@@ -81,9 +81,41 @@
             }
           },
           "required": ["path", "apiVersion"]
+        },
+        "atrium": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "x-path-kind": "required",
+              "type": "string",
+              "minLength": 1
+            },
+            "apiVersion": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": ["path", "apiVersion"]
+        },
+        "agents": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "x-path-kind": "required",
+              "type": "string",
+              "minLength": 1
+            },
+            "apiVersion": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": ["path", "apiVersion"]
         }
       },
-      "required": ["brain", "clips"]
+      "required": ["brain"]
     },
     "clips": {
       "type": "object",

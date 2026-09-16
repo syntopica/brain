@@ -166,3 +166,32 @@ def test_invalid_field_types(section: str, key: str, value: object) -> None:
     cast(dict[str, object], document[section])[key] = value
     with pytest.raises(InvalidSyntopicaConfigError):
         validate_syntopica_schema(document)
+
+
+def test_engines_require_only_brain() -> None:
+    properties = cast(dict[str, object], SYNTOPICA_CONFIG_SCHEMA["properties"])
+    engines = cast(dict[str, object], properties["engines"])
+    assert engines["required"] == ["brain"]
+    assert set(cast(dict[str, object], engines["properties"])) == {
+        "brain",
+        "clips",
+        "atrium",
+        "agents",
+    }
+
+
+@pytest.mark.parametrize("engine", ["clips", "atrium", "agents"])
+def test_optional_engine_entries_share_the_checkout_shape(engine: str) -> None:
+    document = example_document()
+    engines = cast(dict[str, object], document["engines"])
+    engines[engine] = {"path": "../checkout", "apiVersion": 1}
+    validate_syntopica_schema(document)
+    engines[engine] = {"path": "../checkout"}
+    with pytest.raises(InvalidSyntopicaConfigError, match="missing required key"):
+        validate_syntopica_schema(document)
+
+
+def test_brain_only_document_validates() -> None:
+    document = example_document()
+    cast(dict[str, object], document["engines"]).pop("clips")
+    validate_syntopica_schema(document)
