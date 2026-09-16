@@ -20,7 +20,7 @@ ALLOWED = frozenset(
     {
         # The copyright holder is the author, which is what a LICENSE is for.
         "LICENSE",
-        # Both name the baseline-py dependency, which is published on PyPI
+        # Both name the codeality-py dependency, which is published on PyPI
         # under its original scope. A package name is not instance data, and
         # renaming a published distribution is a separate decision. This file
         # deliberately does not spell that name: it is scanned like every
