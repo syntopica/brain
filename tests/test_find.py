@@ -67,3 +67,47 @@ def test_the_section_is_the_heading_above_the_match_not_the_first_one() -> None:
 def test_a_line_carrying_two_terms_beats_an_earlier_line_carrying_one() -> None:
     body = "alpha alone\nalpha and beta together\n"
     assert matching_section(body, ["alpha", "beta"])[1] == 2
+
+
+def test_a_configured_directory_is_a_path_not_a_name(tmp_path: Path, capsys) -> None:
+    """A name is not a location, and the wrong location here is the archive.
+
+    Reducing a configured `curated/captures` to `captures` resolved it against
+    the data root, where a real instance keeps its capture archive: the command
+    then searched the very directory it exists to stay out of (reproduced by
+    review, 2026-09-16).
+    """
+    root = make_data_directory(
+        tmp_path,
+        {
+            "curated/captures/page.md": (
+                "---\ntitle: Curated\nsummary: A curated page.\n---\n\nCuratedanswer lives here.\n"
+            )
+        },
+    )
+    (root / "brain/captures").mkdir(parents=True, exist_ok=True)
+    (root / "brain/captures/raw.md").write_text(
+        "---\ntitle: Raw\nsummary: A capture.\n---\n\nArchiveonly raw content.\n"
+    )
+    assert _command().main(["--data", str(root), "--json", "archiveonly"]) == 0
+    assert __import__("json").loads(capsys.readouterr().out)["hits"] == []
+
+
+def test_the_line_number_is_the_one_the_file_has(tmp_path: Path, capsys) -> None:
+    """Counting from the body reported 67 for a line at 86 on the live wiki."""
+    root = make_data_directory(tmp_path, _PAGES)
+    assert _command().main(["--data", str(root), "--json", "filed", "archive"]) == 0
+    hit = __import__("json").loads(capsys.readouterr().out)["hits"][0]
+    lines = Path(hit["page"]).read_text().splitlines()
+    assert lines[hit["line"] - 1].strip() == hit["text"]
+
+
+def test_a_heading_and_a_summary_can_themselves_be_the_match() -> None:
+    """A page ranked on its summary alone used to cite line 0 with no text."""
+    text = "---\ntitle: T\nsummary: The collector reads the portal.\n---\n\n## Filing\n\nbody\n"
+    assert matching_section(text, ["collector"]) == (
+        "",
+        3,
+        "summary: The collector reads the portal.",
+    )
+    assert matching_section(text, ["filing"]) == ("## Filing", 6, "## Filing")

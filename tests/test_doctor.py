@@ -206,4 +206,5 @@ def test_doctor_reports_semantic_once_atrium_is_configured(tmp_path: Path) -> No
     (root / "syntopica.config.json").write_text(json.dumps(document))
     passed, message = doctor_retrieval(load_syntopica_config(root, {}))
     assert passed
-    assert "semantic (atrium)" in message
+    assert "semantic (atrium configured at" in message
+    assert "atrium status" in message
