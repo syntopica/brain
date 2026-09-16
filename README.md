@@ -29,11 +29,18 @@ against.
 
 ## Quick start
 
+The engine never runs inside your data. Three checkouts side by side: this
+repository, its sibling [`syntopica/clips`](https://github.com/syntopica/clips)
+(the capture pipeline, which the configuration contract requires even before
+you clip anything), and your own data directory, which must be a Git repository
+of its own.
+
 ```bash
 git clone https://github.com/syntopica/brain.git
-cd brain && uv sync
+git clone https://github.com/syntopica/clips.git
+(cd brain && uv sync)
 
-mkdir -p ~/wiki/notes && cd ~/wiki
+mkdir -p wiki/notes wiki/clips && cd wiki && git init
 cat > syntopica.config.json <<'JSON'
 {
   "schemaVersion": 1,
@@ -44,16 +51,22 @@ cat > syntopica.config.json <<'JSON'
     "index": "index.md",
     "ledger": ".ingest"
   },
+  "clips": { "archive": "clips" },
   "engines": {
-    "brain": { "path": "../brain", "apiVersion": 1 }
+    "brain": { "path": "../brain", "apiVersion": 1 },
+    "clips": { "path": "../clips", "apiVersion": 1 }
   }
 }
 JSON
 
-~/brain/bin/brain doctor          # what is missing, by name
-~/brain/bin/brain index           # write index.md from your pages
-~/brain/bin/brain graph           # orphans, dangling links, related pairs
+../brain/bin/brain doctor          # what is missing, by name
+../brain/bin/brain index           # write index.md from your pages
+../brain/bin/brain graph           # orphans, dangling links, related pairs
 ```
+
+On a fresh instance `doctor` exits 1 and names the directories and files it
+still expects (`sources`, `.ingest`, the `.config/*.json` lists); `index` and
+`graph` already work with one page under `notes/`.
 
 Every command takes `--data PATH` to select an instance explicitly. Without it,
 `SYNTOPICA_DATA` is used, and without that the commands walk upwards from the
