@@ -75,3 +75,14 @@ def test_engines_cannot_both_share_data_repository(tmp_path: Path) -> None:
     data, _ = syntopica_test_directory(tmp_path)
     with pytest.raises(InvalidSyntopicaConfigError, match="distinct Git roots"):
         validate_syntopica_git_roots((data, data / "clips", data, data))
+
+
+def test_a_single_engine_root_is_enough(tmp_path: Path) -> None:
+    data, _ = syntopica_test_directory(tmp_path)
+    validate_syntopica_git_roots((data, data / "clips", tmp_path / "engine-brain"))
+
+
+def test_no_engine_root_is_rejected(tmp_path: Path) -> None:
+    data, _ = syntopica_test_directory(tmp_path)
+    with pytest.raises(InvalidSyntopicaConfigError, match="at least one engine"):
+        validate_syntopica_git_roots((data, data / "clips"))

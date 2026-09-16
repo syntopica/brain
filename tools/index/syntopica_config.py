@@ -20,13 +20,13 @@ class SyntopicaConfig:
     ledger: Path
     archive: Path
     brain_path: Path
-    clips_path: Path
+    clips_path: Path | None
     capture_origin: str | None
     capture_mirror: bool
     runners: Mapping[str, str | None]
     browser: str | None
     brain_api_version: int = 1
-    clips_api_version: int = 1
+    clips_api_version: int | None = None
     configured_paths: tuple[Path, ...] = ()  # Paths whose absence is a finding.
     inbox: Path | None = None
     inbox_repository_url: str | None = None

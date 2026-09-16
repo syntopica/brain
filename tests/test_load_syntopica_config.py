@@ -327,3 +327,16 @@ def test_optional_engines_resolve_when_present_and_are_empty_when_absent(
     assert paths[("engines", "atrium", "path")] == (tmp_path / "engine-atrium",)
     assert paths[("engines", "clips", "path")] == ()
     assert paths[("engines", "agents", "path")] == ()
+
+
+def test_brain_only_instance_loads_without_a_clips_engine(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, document = syntopica_test_directory(tmp_path)
+    cast(dict[str, object], document["engines"]).pop("clips")
+    _write(root, document)
+    monkeypatch.chdir(tmp_path)
+    config = load_syntopica_config(root, {})
+    assert config.clips_path is None
+    assert config.clips_api_version is None
+    assert config.brain_path == tmp_path / "engine-brain"

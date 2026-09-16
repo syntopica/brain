@@ -9,7 +9,11 @@ from tests.rendered_fixture_index import rendered_fixture_index
 from tests.syntopica_git import syntopica_git
 
 
-def make_data_directory(root: Path, pages: Mapping[str, str] | None = None) -> Path:
+def make_data_directory(
+    root: Path,
+    pages: Mapping[str, str] | None = None,
+    engines: tuple[str, ...] = ("brain", "clips"),
+) -> Path:
     """Build a synthetic instance under root without inheriting Git templates."""
     root = root.resolve()
     data = root / "data"
@@ -26,7 +30,7 @@ def make_data_directory(root: Path, pages: Mapping[str, str] | None = None) -> P
     # resolve for real; where none does, it is an empty repository carrying only
     # the schema, which is all a path-shape test needs.
     engine = brain_engine_path(Path(__file__).resolve().parents[2])
-    repositories = [data, root / "engine-clips"]
+    repositories = [data] + [root / "engine-clips"] * ("clips" in engines)
     if engine is None:
         repositories.append(root / "engine-brain")
     for repository in repositories:
@@ -88,10 +92,7 @@ def make_data_directory(root: Path, pages: Mapping[str, str] | None = None) -> P
         "clips": {"archive": "clips"},
         "atrium": {"path": "atrium"},
         "conversations": {"path": "conversations"},
-        "engines": {
-            "brain": {"path": "../engine-brain", "apiVersion": 1},
-            "clips": {"path": "../engine-clips", "apiVersion": 1},
-        },
+        "engines": {name: {"path": f"../engine-{name}", "apiVersion": 1} for name in engines},
     }
     (data / "syntopica.config.json").write_text(
         json.dumps(document, indent=2) + "\n", encoding="utf-8"
