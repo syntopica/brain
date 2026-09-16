@@ -48,6 +48,7 @@ def load_syntopica_config(root: Path, environ: Mapping[str, str]) -> SyntopicaCo
     archive = paths[("clips", "archive")][0]
     brain_path = paths[("engines", "brain", "path")][0]
     clips_path = next(iter(paths[("engines", "clips", "path")]), None)
+    atrium_path = next(iter(paths[("engines", "atrium", "path")]), None)
     declared = tuple(
         paths[("engines", name, "path")][0]
         for name in ("brain", "clips", "atrium", "agents")
@@ -63,6 +64,7 @@ def load_syntopica_config(root: Path, environ: Mapping[str, str]) -> SyntopicaCo
     clips_engine = engines.get("clips")
     return SyntopicaConfig(
         data_root=root,
+        atrium_path=atrium_path,
         brain_api_version=cast(int, engines["brain"]["apiVersion"]),
         clips_api_version=None if clips_engine is None else cast(int, clips_engine["apiVersion"]),
         configured_paths=path_kinds["required"],

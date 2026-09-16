@@ -21,6 +21,7 @@ class SyntopicaConfig:
     archive: Path
     brain_path: Path
     clips_path: Path | None
+    atrium_path: Path | None
     capture_origin: str | None
     capture_mirror: bool
     runners: Mapping[str, str | None]

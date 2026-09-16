@@ -32,6 +32,29 @@ against.
   and PageRank scoring, and recall@k, so a change to the page conventions can be
   judged rather than argued about.
 
+## What retrieval you get
+
+There are no embeddings in this engine, so a brain-only instance searches by
+words: `brain find` over the pages' own text, and the link graph for what a page
+connects to. That is the whole retrieval surface, and it is enough for "which
+page says this" -- but it will not find a paraphrase, and it will not answer a
+question asked in another language than the page.
+
+Semantic search over these same pages comes from
+[atrium](https://github.com/syntopica/atrium), which indexes the wiki beside
+your agent conversations and serves both over one call. Declare it under
+`engines.atrium` in `syntopica.config.json` and `brain doctor` says which of the
+two you have:
+
+```
+PASS retrieval: keyword only (`brain find`); add the atrium engine for semantic search
+PASS retrieval: keyword (`brain find`) and semantic (atrium)
+```
+
+Neither line is a failure. A wiki with no semantic lane is a supported
+instance; a session assuming a paraphrase would have been found is the problem
+this line exists to prevent.
+
 ## Quick start
 
 The engine never runs inside your data: this repository is one checkout, your
