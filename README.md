@@ -29,44 +29,56 @@ against.
 
 ## Quick start
 
-The engine never runs inside your data. Three checkouts side by side: this
-repository, its sibling [`syntopica/clips`](https://github.com/syntopica/clips)
-(the capture pipeline, which the configuration contract requires even before
-you clip anything), and your own data directory, which must be a Git repository
-of its own.
+The engine never runs inside your data: this repository is one checkout, your
+wiki is a directory of its own, and one file, `syntopica.config.json`, tells
+the engine where the pages are. The quickest route is the
+[Syntopica hub](https://github.com/syntopica/syntopica), which writes that file
+and the directories the schema expects:
 
 ```bash
-git clone https://github.com/syntopica/brain.git
-git clone https://github.com/syntopica/clips.git
-(cd brain && uv sync)
+uv tool install git+https://github.com/syntopica/syntopica
+mkdir -p wiki/engines && cd wiki
+git clone https://github.com/syntopica/brain.git engines/brain
+(cd engines/brain && uv sync)
+syntopica init --with brain
+cat > pages/start.md <<'PAGE'
+---
+title: Start
+type: concept
+updated: 2026-09-16
+summary: 'The starting point for this wiki.'
+sources: []
+---
 
-mkdir -p wiki/notes wiki/clips && cd wiki && git init
-cat > syntopica.config.json <<'JSON'
-{
-  "schemaVersion": 1,
-  "instanceId": "mine",
-  "brain": {
-    "pages": ["notes"],
-    "sources": "sources",
-    "index": "index.md",
-    "ledger": ".ingest"
-  },
-  "clips": { "archive": "clips" },
-  "engines": {
-    "brain": { "path": "../brain", "apiVersion": 1 },
-    "clips": { "path": "../clips", "apiVersion": 1 }
-  }
-}
-JSON
+Decisions live in [[pages/decisions]].
+PAGE
+cat > pages/decisions.md <<'PAGE'
+---
+title: Decisions
+type: concept
+updated: 2026-09-16
+summary: 'Decisions recorded as linked pages.'
+sources: []
+---
 
-../brain/bin/brain doctor          # what is missing, by name
-../brain/bin/brain index           # write index.md from your pages
-../brain/bin/brain graph           # orphans, dangling links, related pairs
+Back to [[pages/start]].
+PAGE
+engines/brain/bin/brain index     # write index.md from your pages
+engines/brain/bin/brain graph     # orphans, dangling links, related pairs; writes graph.html
+engines/brain/bin/brain lint      # frontmatter, filenames, links that resolve
+engines/brain/bin/brain doctor    # what is still missing, by name
 ```
 
-On a fresh instance `doctor` exits 1 and names the directories and files it
-still expects (`sources`, `.ingest`, the `.config/*.json` lists); `index` and
-`graph` already work with one page under `notes/`.
+Expect `index.md: 2 pages`, `pages 2  links 2  orphans 0  dangling 0`, zero
+lint issues and a passing doctor. Links carry the page directory, as in
+`[[pages/decisions]]`; a bare `[[decisions]]` is not read as a page link.
+
+Without the hub, write `syntopica.config.json` by hand from
+`schema/syntopica.config.example.json`, keeping only the `brain` and
+`engines.brain` sections, and run `git init` in the data directory. `doctor`
+then names every directory and file it still expects; today that includes a
+`clips/` directory even when no clips engine is configured, because the
+schema's default archive path must exist.
 
 Every command takes `--data PATH` to select an instance explicitly. Without it,
 `SYNTOPICA_DATA` is used, and without that the commands walk upwards from the
