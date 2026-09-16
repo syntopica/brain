@@ -23,6 +23,8 @@ def resolve_syntopica_paths(
         ("conversations", "path"),
         ("engines", "brain", "path"),
         ("engines", "clips", "path"),
+        ("engines", "atrium", "path"),
+        ("engines", "agents", "path"),
         ("newsletter", "acceptedSenders"),
         ("newsletter", "rejectedSenders"),
         ("newsletter", "rejectedBookingSenders"),
@@ -31,11 +33,22 @@ def resolve_syntopica_paths(
         ("sessions", "desktopRoots"),
         ("clips", "inbox"),
     )
+    # An instance declares the engines it uses; brain is the only one the
+    # schema requires, so the others may be absent rather than null.
+    optional = {
+        ("engines", "clips", "path"),
+        ("engines", "atrium", "path"),
+        ("engines", "agents", "path"),
+    }
     result: dict[tuple[str, ...], tuple[Path, ...]] = {}
     for field in fields:
         value: object = document
         for key in field:
-            value = cast(Mapping[str, object], value)[key]
+            mapping = cast(Mapping[str, object], value)
+            if key not in mapping and field in optional:
+                value = None
+                break
+            value = mapping[key]
         if value is None:
             result[field] = ()
             continue
