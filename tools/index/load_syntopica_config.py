@@ -47,18 +47,24 @@ def load_syntopica_config(root: Path, environ: Mapping[str, str]) -> SyntopicaCo
     path_kinds = classify_syntopica_paths(paths)
     archive = paths[("clips", "archive")][0]
     brain_path = paths[("engines", "brain", "path")][0]
-    clips_path = paths[("engines", "clips", "path")][0]
-    validate_syntopica_git_roots((root, archive, brain_path, clips_path))
+    clips_path = next(iter(paths[("engines", "clips", "path")]), None)
+    declared = tuple(
+        paths[("engines", name, "path")][0]
+        for name in ("brain", "clips", "atrium", "agents")
+        if paths[("engines", name, "path")]
+    )
+    validate_syntopica_git_roots((root, archive, *declared))
     capture = cast(Mapping[str, object], document["capture"])
     browser = cast(Mapping[str, object], document["browser"])
     browser_origin = (
         root if "CLIPS_HEADLESS_BROWSER" in environ else origins[("browser", "executable")]
     )
     engines = cast(Mapping[str, Mapping[str, object]], document["engines"])
+    clips_engine = engines.get("clips")
     return SyntopicaConfig(
         data_root=root,
         brain_api_version=cast(int, engines["brain"]["apiVersion"]),
-        clips_api_version=cast(int, engines["clips"]["apiVersion"]),
+        clips_api_version=None if clips_engine is None else cast(int, clips_engine["apiVersion"]),
         configured_paths=path_kinds["required"],
         state_paths=path_kinds["state"],
         schema_version=int(cast(int, document["schemaVersion"])),

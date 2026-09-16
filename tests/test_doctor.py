@@ -160,3 +160,24 @@ def test_raw_public_url_cannot_hide_behind_rewrite(
     )
     assert doctor_report(root, {}) == 1
     assert "FAIL archive" in capsys.readouterr().out
+
+
+def test_brain_only_instance_is_healthy(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    root = make_data_directory(tmp_path, engines=("brain",))
+    with patch("tools.index.doctor_executables.shutil.which", return_value="/synthetic/bin/tool"):
+        assert doctor_report(root, {}) == 0
+    output = capsys.readouterr().out
+    assert "PASS api: supported" in output
+    assert "PASS repositories: valid Git identities" in output
+
+
+def test_declared_atrium_checkout_must_exist(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = make_data_directory(tmp_path, engines=("brain",))
+    (root / "syntopica.local.json").write_text(
+        json.dumps({"engines": {"atrium": {"path": "../engine-atrium", "apiVersion": 1}}})
+    )
+    with patch("tools.index.doctor_executables.shutil.which", return_value="/synthetic/bin/tool"):
+        assert doctor_report(root, {}) == 1
+    assert "FAIL" in capsys.readouterr().out
