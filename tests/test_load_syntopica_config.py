@@ -21,6 +21,20 @@ def _write(root: Path, document: object, filename: str = "syntopica.config.json"
     (root / filename).write_text(json.dumps(document), encoding="utf-8")
 
 
+def _with_defaults(document: dict[str, object]) -> dict[str, object]:
+    from tools.index.merge_syntopica_documents import merge_syntopica_documents
+    from tools.index.syntopica_config_schema import SYNTOPICA_CONFIG_SCHEMA
+    from tools.index.syntopica_schema_defaults import syntopica_schema_defaults
+
+    return merge_syntopica_documents(syntopica_schema_defaults(SYNTOPICA_CONFIG_SCHEMA), document)
+
+
+def _default_origins(root: Path) -> dict[tuple[str, ...], Path]:
+    from tools.index.syntopica_value_origins import syntopica_value_origins
+
+    return syntopica_value_origins(_with_defaults({}), root)
+
+
 def test_valid_config_resolves_paths_from_its_file(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -287,3 +301,29 @@ def test_archive_can_share_data_root(tmp_path: Path, archive: str) -> None:
     document["clips"] = {"archive": archive}
     _write(root, document)
     assert load_syntopica_config(root, {}).archive == (root / archive).resolve()
+
+
+def test_optional_engines_resolve_when_present_and_are_empty_when_absent(
+    tmp_path: Path,
+) -> None:
+    from tools.index.resolve_syntopica_paths import resolve_syntopica_paths
+
+    root, document = syntopica_test_directory(tmp_path)
+    (tmp_path / "engine-atrium").mkdir()
+    engines = cast(dict[str, object], document["engines"])
+    engines["atrium"] = {"path": "../engine-atrium", "apiVersion": 1}
+    engines.pop("clips")
+    origins: dict[tuple[str, ...], Path] = {
+        ("engines", "brain", "path"): root,
+        ("engines", "atrium", "path"): root,
+        ("brain", "pages"): root,
+        ("brain", "sources"): root,
+        ("brain", "index"): root,
+        ("brain", "ledger"): root,
+    }
+    paths = resolve_syntopica_paths(
+        _with_defaults(document), _default_origins(root) | origins, root
+    )
+    assert paths[("engines", "atrium", "path")] == (tmp_path / "engine-atrium",)
+    assert paths[("engines", "clips", "path")] == ()
+    assert paths[("engines", "agents", "path")] == ()
