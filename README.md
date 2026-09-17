@@ -24,7 +24,8 @@ against.
   reachable from nothing, and related-but-unlinked pairs scored by shared
   vocabulary. It writes an HTML viewer alongside the report.
 - **`brain lint`** checks the conventions this engine enforces - frontmatter,
-  filenames, links that resolve, summaries that exist.
+  filenames, summaries that exist, links that resolve, and whether the index is
+  current. Orphans are `brain graph`'s report, not a lint failure.
 - **`brain doctor`** answers whether this instance is set up: configured paths
   present, repositories where the configuration says, the API versions
   supported, the executables and credentials the commands need.
@@ -93,7 +94,7 @@ Back to [[pages/start]].
 PAGE
 engines/brain/bin/brain index     # write index.md from your pages
 engines/brain/bin/brain graph     # orphans, dangling links, related pairs; writes graph.html
-engines/brain/bin/brain lint      # frontmatter, filenames, links that resolve
+engines/brain/bin/brain lint      # frontmatter, filenames, summaries, links, index freshness
 engines/brain/bin/brain doctor    # what is still missing, by name
 ```
 

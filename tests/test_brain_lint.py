@@ -28,3 +28,28 @@ def test_lint_rejects_stale_index(tmp_path: Path) -> None:
     config = load_syntopica_config(root, {})
     config.index.write_text("stale\n")
     assert brain_lint(config) == 1
+
+
+def test_lint_rejects_a_page_without_frontmatter(tmp_path: Path) -> None:
+    root = make_data_directory(tmp_path, {"notes/a.md": "No frontmatter here.\n"})
+    assert brain_lint(load_syntopica_config(root, {})) == 1
+
+
+def test_lint_rejects_a_filename_that_is_not_kebab_case(tmp_path: Path) -> None:
+    root = make_data_directory(
+        tmp_path,
+        {
+            "notes/Bad_Name.md": (
+                "---\ntitle: Bad\ntype: note\nupdated: 2026-01-01\n"
+                "summary: A page with a bad name.\n---\n"
+            )
+        },
+    )
+    assert brain_lint(load_syntopica_config(root, {})) == 1
+
+
+def test_lint_rejects_a_page_without_a_summary(tmp_path: Path) -> None:
+    root = make_data_directory(
+        tmp_path, {"notes/a.md": "---\ntitle: A\ntype: note\nupdated: 2026-01-01\n---\n"}
+    )
+    assert brain_lint(load_syntopica_config(root, {})) == 1

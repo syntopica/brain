@@ -24,16 +24,17 @@ def doctor_report(root: Path, environ: Mapping[str, str]) -> int:
     except (OSError, ValueError):
         print("FAIL configuration: invalid paths, repository identities, remotes or settings")
         return 1
-    checks = (
+    checks: tuple[tuple[bool, str], ...] = (
         (True, "configuration: valid"),
         doctor_paths(config),
         doctor_repositories(root, config),
-        doctor_archive(config.archive),
         doctor_retrieval(config),
         doctor_api(config),
         doctor_executables(config, environ),
         doctor_credentials(config, environ),
     )
+    if config.archive is not None:
+        checks += (doctor_archive(config.archive),)
     for passed, message in checks:
         print(f"{'PASS' if passed else 'FAIL'} {message}")
     return int(any(not passed for passed, _ in checks))

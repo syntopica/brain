@@ -44,17 +44,21 @@ def load_syntopica_config(root: Path, environ: Mapping[str, str]) -> SyntopicaCo
     validate_syntopica_schema(document)
     validate_syntopica_urls(document)
     paths = resolve_syntopica_paths(document, origins, root)
-    path_kinds = classify_syntopica_paths(paths)
-    archive = paths[("clips", "archive")][0]
     brain_path = paths[("engines", "brain", "path")][0]
     clips_path = next(iter(paths[("engines", "clips", "path")]), None)
+    # Clips paths describe where captured clips land; without that engine they
+    # describe nothing, and requiring them made a brain-only instance a failure.
+    if clips_path is None:
+        paths = {field: values for field, values in paths.items() if field[0] != "clips"}
+    path_kinds = classify_syntopica_paths(paths)
+    archive = next(iter(paths.get(("clips", "archive"), ())), None)
     atrium_path = next(iter(paths[("engines", "atrium", "path")]), None)
     declared = tuple(
         paths[("engines", name, "path")][0]
         for name in ("brain", "clips", "atrium", "agents")
         if paths[("engines", name, "path")]
     )
-    validate_syntopica_git_roots((root, archive, *declared))
+    validate_syntopica_git_roots(root, archive, declared)
     capture = cast(Mapping[str, object], document["capture"])
     browser = cast(Mapping[str, object], document["browser"])
     browser_origin = (
@@ -76,7 +80,7 @@ def load_syntopica_config(root: Path, environ: Mapping[str, str]) -> SyntopicaCo
         index=paths[("brain", "index")][0],
         ledger=paths[("brain", "ledger")][0],
         archive=archive,
-        inbox=next(iter(paths[("clips", "inbox")]), None),
+        inbox=next(iter(paths.get(("clips", "inbox"), ())), None),
         inbox_repository_url=cast(
             str | None, cast(Mapping[str, object], document["clips"])["inboxRepositoryUrl"]
         ),

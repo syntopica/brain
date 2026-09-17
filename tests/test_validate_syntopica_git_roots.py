@@ -16,7 +16,7 @@ def test_archive_can_share_data_repository(tmp_path: Path, archive: str) -> None
     brain = tmp_path / "engine-brain"
     clips = tmp_path / "engine-clips"
     assert not (data / "clips" / ".git").exists()
-    validate_syntopica_git_roots((data, data / archive, brain, clips))
+    validate_syntopica_git_roots(data, data / archive, (brain, clips))
 
 
 @pytest.mark.parametrize("engine", ["brain", "clips"])
@@ -26,14 +26,14 @@ def test_engine_cannot_share_data_worktree(tmp_path: Path, engine: str, location
     brain = data / location if engine == "brain" else tmp_path / "engine-brain"
     clips = data / location if engine == "clips" else tmp_path / "engine-clips"
     with pytest.raises(InvalidSyntopicaConfigError):
-        validate_syntopica_git_roots((data, data / "clips", brain, clips))
+        validate_syntopica_git_roots(data, data / "clips", (brain, clips))
 
 
 def test_engines_cannot_share_root(tmp_path: Path) -> None:
     data, _ = syntopica_test_directory(tmp_path)
     brain = tmp_path / "engine-brain"
     with pytest.raises(InvalidSyntopicaConfigError, match="distinct Git roots"):
-        validate_syntopica_git_roots((data, data / "clips", brain, brain))
+        validate_syntopica_git_roots(data, data / "clips", (brain, brain))
 
 
 @pytest.mark.parametrize("location", ["missing", "file", "outside", "symlink"])
@@ -47,7 +47,7 @@ def test_archive_must_be_existing_contained_directory(tmp_path: Path, location: 
     brain = tmp_path / "engine-brain"
     clips = tmp_path / "engine-clips"
     with pytest.raises(InvalidSyntopicaConfigError, match="Archive"):
-        validate_syntopica_git_roots((data, archive, brain, clips))
+        validate_syntopica_git_roots(data, archive, (brain, clips))
 
 
 @pytest.mark.parametrize("owner", ["data", "engine-brain"])
@@ -68,21 +68,27 @@ def test_engine_cannot_share_git_common_directory(tmp_path: Path, owner: str) ->
     )
     syntopica_git(repository, "worktree", "add", "--detach", str(worktree))
     with pytest.raises(InvalidSyntopicaConfigError, match="distinct Git roots"):
-        validate_syntopica_git_roots((data, data / "clips", tmp_path / "engine-brain", worktree))
+        validate_syntopica_git_roots(data, data / "clips", (tmp_path / "engine-brain", worktree))
 
 
 def test_engines_cannot_both_share_data_repository(tmp_path: Path) -> None:
     data, _ = syntopica_test_directory(tmp_path)
     with pytest.raises(InvalidSyntopicaConfigError, match="distinct Git roots"):
-        validate_syntopica_git_roots((data, data / "clips", data, data))
+        validate_syntopica_git_roots(data, data / "clips", (data, data))
 
 
 def test_a_single_engine_root_is_enough(tmp_path: Path) -> None:
     data, _ = syntopica_test_directory(tmp_path)
-    validate_syntopica_git_roots((data, data / "clips", tmp_path / "engine-brain"))
+    validate_syntopica_git_roots(data, data / "clips", (tmp_path / "engine-brain",))
 
 
 def test_no_engine_root_is_rejected(tmp_path: Path) -> None:
     data, _ = syntopica_test_directory(tmp_path)
     with pytest.raises(InvalidSyntopicaConfigError, match="at least one engine"):
-        validate_syntopica_git_roots((data, data / "clips"))
+        validate_syntopica_git_roots(data, data / "clips", ())
+
+
+def test_an_instance_without_clips_needs_no_archive(tmp_path: Path) -> None:
+    data, _ = syntopica_test_directory(tmp_path)
+    (data / "clips").rmdir()
+    validate_syntopica_git_roots(data, None, (tmp_path / "engine-brain",))

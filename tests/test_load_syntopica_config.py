@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from collections import UserDict
 from dataclasses import FrozenInstanceError, fields
 from pathlib import Path
@@ -10,6 +11,7 @@ from typing import cast
 
 import pytest
 
+from tests.fixtures.make_data_directory import make_data_directory
 from tests.syntopica_git import syntopica_git
 from tests.syntopica_test_directory import syntopica_test_directory
 from tools.index.invalid_syntopica_config_error import InvalidSyntopicaConfigError
@@ -340,3 +342,11 @@ def test_brain_only_instance_loads_without_a_clips_engine(
     assert config.clips_path is None
     assert config.clips_api_version is None
     assert config.brain_path == tmp_path / "engine-brain"
+
+
+def test_a_brain_only_instance_needs_no_clips_archive(tmp_path: Path) -> None:
+    root = make_data_directory(tmp_path, engines=("brain",))
+    shutil.rmtree(root / "clips")
+    config = load_syntopica_config(root, {})
+    assert config.archive is None
+    assert config.inbox is None

@@ -158,7 +158,7 @@ not write it yet.
 | -------------- | --------------------------------------------------------------------------- |
 | `brain index`  | the root map, regenerated from every page's `summary:`                      |
 | `brain graph`  | orphans, dangling links, components, related-but-unlinked pairs             |
-| `brain lint`   | frontmatter, filenames, summaries, links that resolve                       |
+| `brain lint`   | frontmatter, filenames, summaries, links that resolve, index freshness      |
 | `brain doctor` | configured paths, repositories, API versions, executables, credentials      |
 | `tools/eval`   | retrieval quality over your own pages: keyword and PageRank scoring, recall |
 
