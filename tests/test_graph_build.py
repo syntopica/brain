@@ -421,3 +421,14 @@ def test_graph_resolves_environment_data_from_tmp(
     monkeypatch.chdir("/tmp")
     assert main([]) == 0
     assert (data / "brain/graph.html").is_file()
+
+
+def test_a_folded_title_is_read_as_the_title_it_is() -> None:
+    # Prettier reflows frontmatter at 80 columns, so a long title lives on the
+    # lines below its key; read one line at a time it came back absent.
+    text = (
+        "---\ntitle:\n  Sistema RED - what an authorization is, and what it\n"
+        "  drags along\ntype: topic\nupdated: 2026-09-03\n---\n"
+    )
+    assert parse_frontmatter(text)["title"].startswith("Sistema RED - what an authorization")
+    assert parse_frontmatter(text)["type"] == "topic"

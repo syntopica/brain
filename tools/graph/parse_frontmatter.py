@@ -1,8 +1,9 @@
 """Parse frontmatter: extracted from build.py."""
 
-import re
+from tools.index.folded_value import folded_value
 
 FENCE = len("---")
+FIELDS = ("title", "type", "updated")
 
 
 def parse_frontmatter(text: str) -> dict[str, str]:
@@ -10,18 +11,19 @@ def parse_frontmatter(text: str) -> dict[str, str]:
 
     Only those three, because they are the only scalars the viewer shows;
     `sources` is a block list and is read by `frontmatter_sources`. A page with
-    no frontmatter, or one whose block is never closed, yields an empty mapping
-    rather than an error - a single malformed page must not stop the graph
-    being drawn.
+    no frontmatter, or one whose frontmatter is never closed, yields an empty
+    mapping rather than an error - a single malformed page must not stop the
+    graph being drawn.
     """
     if not text.startswith("---"):
         return {}
     end = text.find("\n---", FENCE)
     if end == -1:
         return {}
-    fields: dict[str, str] = {}
-    for line in text[3:end].splitlines():
-        m = re.match(r"^(title|type|updated):\s*(.+)$", line.strip())
-        if m:
-            fields[m.group(1)] = m.group(2).strip().strip("'\"")
+    block = text[3:end]
+    fields = {}
+    for field in FIELDS:
+        value = folded_value(block, field).strip().strip("'\"")
+        if value:
+            fields[field] = value
     return fields

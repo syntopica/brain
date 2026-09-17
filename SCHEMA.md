@@ -143,9 +143,13 @@ degrades into stray dollar signs mid-sentence is worse than one on its own line.
 ### Links
 
 `[[dir/page-name]]` links a page by its path from the data directory, without
-the extension: `[[pages/decisions]]` for `pages/decisions.md`. The graph and
-lint scanners ignore a target with no `/` in it, so a bare `[[page-name]]`
-creates neither an edge nor a dangling-link warning.
+the extension: `[[pages/decisions]]` for `pages/decisions.md`. Write that form.
+
+A bare `[[page-name]]` resolves too, when exactly one page has that filename;
+when several do, lint reports it unresolved and the qualified form is the fix.
+A bare name matching no page at all is ignored rather than reported, because
+citation markers like `[[S1]]` are written in this position in numbers and are
+not page links.
 `brain graph` reads them: a link to a page that does not exist is reported as
 dangling, a page nothing links to is an orphan, and a cluster reachable from
 nothing else is reported as its own component. A new page that only the index
