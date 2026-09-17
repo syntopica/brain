@@ -43,9 +43,9 @@ def scan_pages(root: Path, directories: tuple[Path, ...]) -> dict[str, Page]:
             }
     # Resolution needs every page, so it happens once the scan is complete.
     by_basename: dict[str, tuple[str, ...]] = {}
-    for page in pages:
-        stem = page.rpartition("/")[2]
-        by_basename[stem] = (*by_basename.get(stem, ()), page)
+    for page_id in pages:
+        stem = page_id.rpartition("/")[2]
+        by_basename[stem] = (*by_basename.get(stem, ()), page_id)
     for page in pages.values():
         resolved = []
         for target in page["targets"]:

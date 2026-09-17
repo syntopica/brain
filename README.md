@@ -103,12 +103,16 @@ lint issues and a passing doctor. Links carry the page directory, as in
 `[[pages/decisions]]`; a bare `[[decisions]]` resolves when exactly one page
 carries that filename.
 
+A brain-only instance needs no other checkout: the Clips engine belongs to the
+clips component, and building an index, a graph or a lint report never asks for
+it. The hub's brain-only quickstart above is the tested route, and it keeps
+data and engine source apart - engine checkouts go under the data directory's
+ignored `engines/`, while the manual layout below uses sibling checkouts.
+
 Without the hub, write `syntopica.config.json` by hand from
 `schema/syntopica.config.example.json`, keeping only the `brain` and
 `engines.brain` sections, and run `git init` in the data directory. `doctor`
-then names every directory and file it still expects; today that includes a
-`clips/` directory even when no clips engine is configured, because the
-schema's default archive path must exist.
+then names every directory and file it still expects.
 
 Every command takes `--data PATH` to select an instance explicitly. Without it,
 `SYNTOPICA_DATA` is used, and without that the commands walk upwards from the
