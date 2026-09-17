@@ -44,9 +44,8 @@ def rendered(root: Path, directories: tuple[Path, ...], inbox: Path | None = Non
     if missing:
         for page in missing:
             print(f"no summary: {page}", file=sys.stderr)
-    if inbox is not None:
-        name = Path(os.path.relpath(inbox, root)).as_posix()
-        out.append(
-            f"---\n\n**Inbox:** `{name}/` receives captured clips; ingest them with clips.\n"
-        )
-    return "\n".join(out) + "\n"
+    body = "\n".join(out) + "\n"
+    if inbox is None:
+        return body
+    name = Path(os.path.relpath(inbox, root)).as_posix()
+    return body + f"---\n\n**Inbox:** `{name}/` receives captured clips; ingest them with clips.\n"
