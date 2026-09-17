@@ -197,22 +197,22 @@
       "properties": {
         "synthesis": {
           "type": ["string", "null"],
-          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual", "fallback"],
           "default": null
         },
         "grade": {
           "type": ["string", "null"],
-          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual", "fallback"],
           "default": null
         },
         "triage": {
           "type": ["string", "null"],
-          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual", "fallback"],
           "default": null
         },
         "triageRefiner": {
           "type": ["string", "null"],
-          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual", "fallback", "off"],
           "default": null
         }
       }
