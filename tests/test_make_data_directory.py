@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import subprocess
 from pathlib import Path
 
@@ -65,22 +66,20 @@ def test_fixture_contains_no_personal_data(tmp_path: Path) -> None:
 
 
 def test_fixture_contains_no_home_path_or_email(tmp_path: Path) -> None:
+    """The fixture must carry no home path and no address, on any machine.
+
+    Read in Python rather than shelled out to ripgrep: the tree is a handful of
+    small files, and the dependency was invisible until a runner without `rg`
+    turned the scan into a FileNotFoundError.
+    """
     make_data_directory(tmp_path)
-    broad = subprocess.run(
-        [
-            "rg",
-            "--hidden",
-            "--no-ignore",
-            "-l",
-            "-e",
-            r"/Users/|/home/|[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}",
-            str(tmp_path),
-        ],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert broad.returncode == 1, "Broad privacy scan failed or matched fixture files"
+    personal = re.compile(r"/Users/|/home/|[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}")
+    matched = [
+        str(path)
+        for path in tmp_path.rglob("*")
+        if path.is_file() and personal.search(path.read_text(encoding="utf-8", errors="replace"))
+    ]
+    assert matched == [], f"Broad privacy scan matched fixture files: {matched}"
 
 
 @pytest.mark.parametrize("name", ["../escape.md", "/absolute.md", "index.md", "notes/page.txt"])
