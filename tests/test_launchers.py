@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from tests.engines_for_launcher import engines_for_launcher
 from tests.fixtures.make_data_directory import make_data_directory
 from tests.tool_paths import ROOT
 
@@ -23,7 +24,7 @@ CLIPS_ONLY = pytest.mark.skipif(CLIPS_LAUNCHER is None, reason="no clips package
 
 @pytest.mark.parametrize("launcher", LAUNCHERS)
 def test_launcher_doctor_from_tmp_with_explicit_data(tmp_path: Path, launcher: str) -> None:
-    data = make_data_directory(tmp_path)
+    data = make_data_directory(tmp_path, engines=engines_for_launcher(launcher))
     result = subprocess.run(
         [str(ROOT / launcher), "--data", str(data), "doctor"],
         cwd="/tmp",
@@ -67,7 +68,7 @@ def test_launcher_from_tmp_requires_data_configuration(launcher: str) -> None:
 
 @pytest.mark.parametrize("launcher", LAUNCHERS)
 def test_symlink_launcher_discovers_from_callers_directory(tmp_path: Path, launcher: str) -> None:
-    data = make_data_directory(tmp_path)
+    data = make_data_directory(tmp_path, engines=engines_for_launcher(launcher))
     link = tmp_path / "launcher"
     link.symlink_to(ROOT / launcher)
     caller = data / "nested" / "deeper"

@@ -59,7 +59,9 @@ jobs:
         run: uv sync --locked --all-extras --all-groups
 
       # The engine is run against an instance it builds itself, never against
-      # anyone's wiki: this job has no credential that could reach one.
+      # anyone's wiki: this job has no credential that could reach one. The
+      # instance declares brain alone: one declaring clips requires node and
+      # pnpm, which this Python job has no reason to install.
       - name: Build a synthetic instance and run the engine over it
         run: |
           uv run python - <<'PYTHON'
@@ -67,7 +69,7 @@ jobs:
           import sys
           sys.path.insert(0, ".")
           from tests.fixtures.make_data_directory import make_data_directory
-          print(make_data_directory(Path("ci-instance").resolve()))
+          print(make_data_directory(Path("ci-instance").resolve(), engines=("brain",)))
           PYTHON
           uv run python tools/index/build.py --data ci-instance/data --check
           uv run python tools/graph/build.py --data ci-instance/data
