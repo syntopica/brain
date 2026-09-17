@@ -30,7 +30,7 @@ def main(argv: list[str] | None = None) -> int:
         print(str(error), file=sys.stderr)
         return 1
     directories = ordered_page_directories(config.pages)
-    text = rendered(config.index.parent, directories)
+    text = rendered(config.index.parent, directories, config.inbox)
     if args.check:
         current = config.index.read_text(encoding="utf-8")
         if normalized(current) == normalized(text):

@@ -21,7 +21,10 @@ def make_data_directory(
         pages
         if pages is not None
         else {
-            "notes/example.md": "---\ntitle: Example\nsummary: A generic note.\n---\n\nGeneric content.\n"
+            "notes/example.md": (
+                "---\ntitle: Example\ntype: note\nupdated: 2026-01-01\n"
+                "summary: A generic note.\n---\n\nGeneric content.\n"
+            )
         }
     )
     # `engines.brain.path` always reads `../engine-brain`, so the document names

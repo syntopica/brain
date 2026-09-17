@@ -17,7 +17,7 @@ import pytest
 from tests.fixtures.make_data_directory import make_data_directory
 from tests.tool_paths import TOOLS_ROOT
 from tools.index.raw_summary import raw_summary
-from tools.index.rendered import FOOTER, HEADER
+from tools.index.rendered import HEADER
 from tools.index.summary_of import summary_of
 
 
@@ -154,10 +154,18 @@ def test_a_page_without_a_summary_is_still_listed_and_named_on_stderr(build, wik
     assert "no summary: topics/silent" in capsys.readouterr().err
 
 
-def test_the_header_and_the_inbox_footer_are_constants_not_data(build, wiki) -> None:
+def test_the_header_is_a_constant_not_data(build, wiki) -> None:
     body = build.rendered(wiki, (wiki / "topics",))
     assert body.startswith(HEADER)
-    assert body.endswith(FOOTER)
+
+
+def test_no_inbox_is_advertised_when_the_instance_configured_none(build, wiki) -> None:
+    assert "Inbox" not in build.rendered(wiki, (wiki / "topics",))
+
+
+def test_a_configured_inbox_is_named_by_its_own_path(build, wiki) -> None:
+    body = build.rendered(wiki, (wiki / "topics",), wiki / "clips" / "inbox")
+    assert "**Inbox:** `clips/inbox/`" in body
 
 
 def test_a_section_whose_folder_is_empty_still_gets_its_heading(build, wiki) -> None:

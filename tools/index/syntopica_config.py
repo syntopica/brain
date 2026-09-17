@@ -18,7 +18,7 @@ class SyntopicaConfig:
     sources: Path
     index: Path
     ledger: Path
-    archive: Path
+    archive: Path | None
     brain_path: Path
     clips_path: Path | None
     atrium_path: Path | None

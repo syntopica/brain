@@ -9,21 +9,25 @@ from tools.index.run_syntopica_git import run_syntopica_git
 from tools.index.validate_syntopica_git_remotes import validate_syntopica_git_remotes
 
 
-def validate_syntopica_git_roots(roots: tuple[Path, ...]) -> None:
+def validate_syntopica_git_roots(
+    data_root: Path, archive: Path | None, engines: tuple[Path, ...]
+) -> None:
     """Keep the archive in data and require independent engine repositories.
 
-    ``roots[0]`` is the data directory, ``roots[1]`` the archive, and the rest
-    the engine checkouts the instance declares; a brain-only instance declares
-    one.
+    ``archive`` is ``None`` for an instance that declares no clips engine: the
+    archive is where captured clips land, so requiring the directory of a
+    component the instance does not have turned a brain-only setup into a
+    configuration error.
     """
-    if len(roots) < 3:
+    if not engines:
         raise InvalidSyntopicaConfigError("An instance must declare at least one engine")
-    archive = roots[1].resolve()
-    if not archive.is_dir() or not archive.is_relative_to(roots[0]):
-        raise InvalidSyntopicaConfigError(
-            "Archive must be an existing directory within the data directory"
-        )
-    repositories = (roots[0], *roots[2:])
+    if archive is not None:
+        resolved = archive.resolve()
+        if not resolved.is_dir() or not resolved.is_relative_to(data_root):
+            raise InvalidSyntopicaConfigError(
+                "Archive must be an existing directory within the data directory"
+            )
+    repositories = (data_root, *engines)
     if len(set(repositories)) != len(repositories):
         raise InvalidSyntopicaConfigError("Data and engines must have distinct Git roots")
     identities: set[Path] = set()
