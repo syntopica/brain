@@ -100,7 +100,8 @@ engines/brain/bin/brain doctor    # what is still missing, by name
 
 Expect `index.md: 2 pages`, `pages 2  links 2  orphans 0  dangling 0`, zero
 lint issues and a passing doctor. Links carry the page directory, as in
-`[[pages/decisions]]`; a bare `[[decisions]]` is not read as a page link.
+`[[pages/decisions]]`; a bare `[[decisions]]` resolves when exactly one page
+carries that filename.
 
 Without the hub, write `syntopica.config.json` by hand from
 `schema/syntopica.config.example.json`, keeping only the `brain` and
