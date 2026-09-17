@@ -2,7 +2,15 @@
 
 from tools.index.syntopica_config import SyntopicaConfig
 
-ADAPTERS = {"codex": "codex", "agy-fine": "agy", "agy-bulk": "agy", "cursor": "cursor-agent"}
+# "fallback" chains two transports and ends on agy, so agy is what it always
+# needs; "manual" and "off" need no command at all and are absent on purpose.
+ADAPTERS = {
+    "codex": "codex",
+    "agy-fine": "agy",
+    "agy-bulk": "agy",
+    "cursor": "cursor-agent",
+    "fallback": "agy",
+}
 
 
 def required_executables(config: SyntopicaConfig) -> tuple[str, ...]:

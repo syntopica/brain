@@ -143,11 +143,23 @@ def test_versions_must_be_positive_integers(value: object) -> None:
             validate_syntopica_schema(document)
 
 
-@pytest.mark.parametrize("runner", [None, "codex", "agy-fine", "agy-bulk", "cursor", "manual"])
+@pytest.mark.parametrize(
+    "runner", [None, "codex", "agy-fine", "agy-bulk", "cursor", "manual", "fallback"]
+)
 def test_registered_runners(runner: str | None) -> None:
     document = example_document()
     document["runners"] = dict.fromkeys(("synthesis", "grade", "triage", "triageRefiner"), runner)
     validate_syntopica_schema(document)
+
+
+def test_triage_refiner_may_be_turned_off() -> None:
+    """Only the refinement pass takes "off": it is the one stage a run can skip."""
+    document = example_document()
+    document["runners"] = {"triageRefiner": "off"}
+    validate_syntopica_schema(document)
+    document["runners"] = {"triage": "off"}
+    with pytest.raises(InvalidSyntopicaConfigError):
+        validate_syntopica_schema(document)
 
 
 @pytest.mark.parametrize(
