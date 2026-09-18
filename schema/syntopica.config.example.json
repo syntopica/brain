@@ -56,7 +56,9 @@
   "newsletter": {
     "acceptedSenders": ".config/newsletter-accepted.json",
     "rejectedSenders": ".config/newsletter-rejected.json",
-    "rejectedBookingSenders": ".config/newsletter-rejected-booking.json"
+    "rejectedBookingSenders": ".config/newsletter-rejected-booking.json",
+    "triageProfile": "",
+    "triageTopics": ["ai-agents", "llm-engineering", "saas", "seo", "devtools"]
   },
   "projects": {
     "roots": [],

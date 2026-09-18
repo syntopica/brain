@@ -207,3 +207,25 @@ def test_brain_only_document_validates() -> None:
     document = example_document()
     cast(dict[str, object], document["engines"]).pop("clips")
     validate_syntopica_schema(document)
+
+
+def test_triage_subject_is_configuration() -> None:
+    """Who the triage classifier works for is the instance's, not the engine's.
+
+    The profile paragraph and the topic list were literals in the clips triage
+    prompt until 2026-09-18, describing one person in a public repository.
+    """
+    document = example_document()
+    newsletter = cast(dict[str, object], document["newsletter"])
+    newsletter["triageProfile"] = "Interests: compilers."
+    newsletter["triageTopics"] = ["compilers", "type-systems"]
+    validate_syntopica_schema(document)
+
+
+@pytest.mark.parametrize("topic", ["", "Upper", "two words", "trailing-", "../x"])
+def test_triage_topics_are_slugs(topic: str) -> None:
+    """A topic names a file, `<topic>.md`, so it has to be a safe slug."""
+    document = example_document()
+    cast(dict[str, object], document["newsletter"])["triageTopics"] = [topic]
+    with pytest.raises(InvalidSyntopicaConfigError):
+        validate_syntopica_schema(document)

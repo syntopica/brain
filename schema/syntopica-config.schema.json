@@ -251,6 +251,18 @@
           "minLength": 1,
           "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
           "default": ".config/newsletter-rejected-booking.json"
+        },
+        "triageProfile": {
+          "type": "string",
+          "default": ""
+        },
+        "triageTopics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*(?![\\s\\S])"
+          },
+          "default": ["ai-agents", "llm-engineering", "saas", "seo", "devtools"]
         }
       }
     },
