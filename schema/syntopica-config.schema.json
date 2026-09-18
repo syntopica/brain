@@ -140,6 +140,14 @@
           "type": ["string", "null"],
           "minLength": 1,
           "default": null
+        },
+        "boundaryDecision": {
+          "x-path-kind": "required",
+          "description": "This instance's boundary decision for model synthesizers. Null means the engine's packaged decision, which refuses.",
+          "type": ["string", "null"],
+          "minLength": 1,
+          "pattern": "^(?!/)(?![\\s\\S]*(?:^|/)\\.\\.(?:/|(?![\\s\\S])))[^\\u0000]+(?![\\s\\S])",
+          "default": null
         }
       }
     },

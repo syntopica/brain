@@ -32,6 +32,7 @@ def resolve_syntopica_paths(
         ("projects", "roots"),
         ("sessions", "desktopRoots"),
         ("clips", "inbox"),
+        ("clips", "boundaryDecision"),
     )
     # An instance declares the engines it uses; brain is the only one the
     # schema requires, so the others may be absent rather than null.

@@ -350,3 +350,19 @@ def test_a_brain_only_instance_needs_no_clips_archive(tmp_path: Path) -> None:
     config = load_syntopica_config(root, {})
     assert config.archive is None
     assert config.inbox is None
+
+
+def test_boundary_decision_is_an_instance_path(tmp_path: Path) -> None:
+    """The acceptance of a model boundary is the operator's, so it lives in the
+    instance: unset it is absent, set it must stay inside the data directory,
+    and a declared file that is missing is a finding rather than a fallback."""
+    root, document = syntopica_test_directory(tmp_path)
+    assert load_syntopica_config(root, {}).configured_paths.count(root / "decision.json") == 0
+    clips = cast(dict[str, object], document.setdefault("clips", {}))
+    clips["boundaryDecision"] = "decision.json"
+    _write(root, document)
+    assert root / "decision.json" in load_syntopica_config(root, {}).configured_paths
+    clips["boundaryDecision"] = "../outside.json"
+    _write(root, document)
+    with pytest.raises(InvalidSyntopicaConfigError):
+        load_syntopica_config(root, {})
