@@ -25,7 +25,7 @@ index.
 Measured today (`python3 tools/graph/build.py`): 110 pages, 542 links, 0
 orphans, 0 dangling, and **14 pages that link to no other page**. That last
 number is the one that matters for a link-following reader: a walk that lands on
-`projects/project-after` cannot continue, so recall for any question those pages answer
+`projects/desktop-app` cannot continue, so recall for any question those pages answer
 is bounded by whether `index.md` or an inbound link pointed there in the first
 place.
 
