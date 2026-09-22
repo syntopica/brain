@@ -21,9 +21,9 @@ from tests.tool_paths import tool_paths
 # Needs the memstore package, which is a separate project this repository
 # only drives; there is nothing to install here.
 NEEDS_MEMSTORE = "tools/memstore/"
-# Puts a sibling toolkit checkout on sys.path and imports its signer: a separate checkout,
-# not a package, so a machine without it cannot import this tool at all.
-NEEDS_TOOLKIT_CHECKOUT = "tools/toolkit/"
+# Puts a sibling signer checkout on sys.path and imports it: a separate
+# checkout, not a package, so a machine without it cannot import that tool.
+NEEDS_SIGNER_CHECKOUT = "tools/signer/"
 # A missing third-party module means an extra is not installed on this machine,
 # which is a skip; a missing module of our own is a broken sibling import.
 TOOL_MODULE_NAMES = frozenset(path.stem for path in tool_paths())
@@ -53,7 +53,7 @@ def _import(path: Path) -> None:
 def test_importing_a_tool_runs_nothing(path: Path) -> None:
     if NEEDS_MEMSTORE in path.as_posix():
         pytest.importorskip("memstore")
-    if NEEDS_TOOLKIT_CHECKOUT in path.as_posix():
+    if NEEDS_SIGNER_CHECKOUT in path.as_posix():
         pytest.importorskip("signer")
     try:
         _import(path)

@@ -22,6 +22,7 @@ and failing a commit on it would be the always-fires shape this repository has
 switched off once.
 """
 
+import os
 import sys
 import tomllib
 from pathlib import Path
@@ -34,8 +35,14 @@ from pagerank_scores import pagerank_scores
 from recall_at_k import recall_at_k
 from top_pages import top_pages
 
-ROOT = Path(__file__).resolve().parents[2]
-QUERIES = Path(__file__).resolve().parent / "queries.toml"
+# The pages and the question set both belong to an instance, not to this
+# engine: point SYNTOPICA_DATA at the wiki and SYNTOPICA_EVAL_QUERIES at its
+# own ground truth. The bundled `queries.toml` is an example set.
+ROOT = Path(os.environ.get("SYNTOPICA_DATA") or Path(__file__).resolve().parents[2])
+QUERIES = Path(
+    os.environ.get("SYNTOPICA_EVAL_QUERIES")
+    or Path(__file__).resolve().parent / "queries.toml"
+)
 K = 5
 
 

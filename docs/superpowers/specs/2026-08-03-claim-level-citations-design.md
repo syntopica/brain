@@ -21,7 +21,7 @@ page came from, and nothing says where a _sentence_ came from. Two costs follow,
 both measured rather than assumed.
 
 **The grader cannot tell "unsupported" from "not from a source".** Grading
-`business/toolkit.md` three times on 2026-08-02 produced one unsupported claim
+`business/e-signature.md` three times on 2026-08-02 produced one unsupported claim
 per pass, and each fix produced the next: "hard-to-automate Java dependency",
 then "official validator", then "the official **Spanish** e-signature
 application" - a fact no reader here doubts and the repository README simply
@@ -66,7 +66,7 @@ is spelled as a word rather than `S0` on purpose: a numeric neighbour of `S1`
 invites the typo that silently reattributes a claim, and the tier it maps to is
 the one that outranks everything.
 
-`OWN` is what closes the toolkit loop. "The official Spanish e-signature
+`OWN` is what closes the e-signature loop. "The official Spanish e-signature
 application" is a claim the owner knows first-hand and no clip states; today it
 is unsupported forever, and with a marker it is attributed to the rank that
 outranks the clip.
@@ -138,7 +138,7 @@ passed silently and not reported as unsupported.
 Uncheckable is a third state, next to `unsupported` and `clean`, and it does
 **not** change the verdict: a page whose only findings are uncheckable claims
 grades `clean`. That is the shape `verification: exempt` already uses - a state
-that reads differently without firing - and it is what keeps the toolkit loop
+that reads differently without firing - and it is what keeps the e-signature loop
 from simply moving to a new name. Passing an `OWN` claim in silence was the
 alternative and it is worse: silence is exactly how an unverified page came to
 look clean in the first place.
