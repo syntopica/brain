@@ -40,8 +40,7 @@ from top_pages import top_pages
 # own ground truth. The bundled `queries.toml` is an example set.
 ROOT = Path(os.environ.get("SYNTOPICA_DATA") or Path(__file__).resolve().parents[2])
 QUERIES = Path(
-    os.environ.get("SYNTOPICA_EVAL_QUERIES")
-    or Path(__file__).resolve().parent / "queries.toml"
+    os.environ.get("SYNTOPICA_EVAL_QUERIES") or Path(__file__).resolve().parent / "queries.toml"
 )
 K = 5
 
