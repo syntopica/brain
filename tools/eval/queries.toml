@@ -1,0 +1,63 @@
+# Example ground truth for the retrieval eval: a question, and the pages that
+# should answer it. An instance replaces this file with its own set and points
+# the runner at it with SYNTOPICA_EVAL_QUERIES; the questions below name pages
+# this repository does not ship, so they are a shape to copy, not a benchmark.
+#
+# Hand-write the set. One generated from the pages measures whether the
+# generator read the same page twice.
+#
+# `expected_pages = []` is a refusal case: the wiki holds nothing on it, and a
+# baseline that returns five confident pages anyway has failed. Those are the
+# questions that make the number mean something, so keep some.
+#
+# Include questions that target pages linking to no other page. Link-following
+# retrieval is weakest there by construction, and a set without them would
+# flatter the graph.
+
+[[query]]
+question = "Why is this brain a wiki rather than a RAG index?"
+expected_pages = ["topics/llm-wiki"]
+
+[[query]]
+question = "Which vector index is eight times smaller than float32?"
+expected_pages = ["topics/turbovec"]
+
+[[query]]
+question = "Which extraction library does the clipper use and what is its DOM mutation trap?"
+expected_pages = ["topics/readability"]
+
+[[query]]
+question = "How does the Chrome extension clip a page into the clip store?"
+expected_pages = ["projects/clipper"]
+
+[[query]]
+question = "Which models run on owned hardware here, and at what quantization?"
+expected_pages = ["topics/local-llm-stack"]
+
+[[query]]
+question = "What do recent frontier models want removed from prompts written for older ones?"
+expected_pages = ["topics/frontier-model-prompting"]
+
+[[query]]
+question = "What are the repeatable steps for closing an accounting quarter?"
+expected_pages = ["business/quarter-close-playbook"]
+
+[[query]]
+question = "Where is the bank export buffered and how are card movements merged?"
+expected_pages = ["business/bank-movements"]
+
+[[query]]
+question = "Which site in the portfolio still runs an end-of-life CMS?"
+expected_pages = ["projects/legacy-site"]
+
+[[query]]
+question = "How many domains are in the portfolio and who registers them?"
+expected_pages = ["business/domains"]
+
+[[query]]
+question = "What was the score of the 2026 Champions League final?"
+expected_pages = []
+
+[[query]]
+question = "Which dentist did the family visit in March?"
+expected_pages = []
