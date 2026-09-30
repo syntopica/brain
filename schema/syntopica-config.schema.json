@@ -205,7 +205,7 @@
       "properties": {
         "synthesis": {
           "type": ["string", "null"],
-          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual", "fallback"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual", "fallback", "worker"],
           "default": null
         },
         "grade": {
