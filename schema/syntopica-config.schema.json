@@ -220,7 +220,7 @@
         },
         "triageRefiner": {
           "type": ["string", "null"],
-          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual", "fallback", "off"],
+          "enum": [null, "codex", "agy-fine", "agy-bulk", "cursor", "manual", "fallback", "off", "worker"],
           "default": null
         }
       }
