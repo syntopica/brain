@@ -3,8 +3,10 @@
 from tools.index.syntopica_config import SyntopicaConfig
 
 
-def doctor_api(config: SyntopicaConfig) -> tuple[bool, str]:
+def doctor_api(config: SyntopicaConfig) -> tuple[bool, str, str]:
     """Every declared engine currently implements protocol version one."""
     versions = (config.brain_api_version, config.clips_api_version)
     supported = all(version in (None, 1) for version in versions)
-    return supported, "api: supported" if supported else "api: unsupported engine version"
+    if supported:
+        return True, "api: supported", "ok"
+    return False, "api: unsupported engine version", "api_unsupported"

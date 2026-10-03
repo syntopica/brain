@@ -5,7 +5,7 @@ from pathlib import Path
 from tools.index.syntopica_config import SyntopicaConfig
 
 
-def doctor_retrieval(config: SyntopicaConfig) -> tuple[bool, str]:
+def doctor_retrieval(config: SyntopicaConfig) -> tuple[bool, str, str]:
     """Report keyword-only or keyword-and-semantic, and never fail on either.
 
     A wiki with no semantic lane is a supported instance, not a broken one: this
@@ -17,19 +17,29 @@ def doctor_retrieval(config: SyntopicaConfig) -> tuple[bool, str]:
     """
     path = config.atrium_path
     if path is None:
-        return True, (
-            "retrieval: keyword only (`brain find`); add the atrium engine for semantic search"
+        return (
+            True,
+            "retrieval: keyword only (`brain find`); add the atrium engine for semantic search",
+            "keyword_only",
         )
     if not Path(path).is_dir():
-        return True, (
-            f"retrieval: keyword only (`brain find`); atrium is configured at {path} "
-            "but the checkout is absent"
+        return (
+            True,
+            (
+                f"retrieval: keyword only (`brain find`); atrium is configured at {path} "
+                "but the checkout is absent"
+            ),
+            "atrium_absent",
         )
     # A checkout is a declaration, not a working index: atrium builds its own
     # state on demand, and whether it holds vectors for these pages is atrium's
     # question to answer, not this engine's. So the line says configured, and
     # names the command that says ready (raised by review, 2026-09-16).
-    return True, (
-        "retrieval: keyword (`brain find`) and semantic (atrium configured at "
-        f"{path}); run `atrium status` for whether its index is built"
+    return (
+        True,
+        (
+            "retrieval: keyword (`brain find`) and semantic (atrium configured at "
+            f"{path}); run `atrium status` for whether its index is built"
+        ),
+        "semantic_configured",
     )

@@ -21,6 +21,6 @@ def test_clips_brings_node_and_pnpm_back(tmp_path: Path) -> None:
 
 def test_a_missing_executable_is_named_not_counted(tmp_path: Path) -> None:
     config = load_syntopica_config(make_data_directory(tmp_path), {})
-    passed, message = doctor_executables(config, {"PATH": str(tmp_path / "empty")})
+    passed, message, _ = doctor_executables(config, {"PATH": str(tmp_path / "empty")})
     assert not passed
     assert "git" in message and "uv" in message

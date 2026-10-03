@@ -11,8 +11,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from tools.graph.build_nodes import build_nodes
+from tools.graph.graph_document import graph_document
 from tools.graph.link_components import link_components
 from tools.graph.print_related import print_related
+from tools.graph.related_document import related_document
 from tools.graph.scan_pages import scan_pages
 from tools.graph.undirected_neighbours import undirected_neighbours
 from tools.index.data_directory_not_found_error import DataDirectoryNotFoundError
@@ -28,15 +30,29 @@ def main(argv: list[str] | None = None) -> int:
     """Rebuild graph.html and print every graph-quality issue the walk found."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", metavar="PATH")
+    parser.add_argument("--json", action="store_true", help="print a document; never writes")
+    parser.add_argument("--no-html", action="store_true", help="do not write graph.html")
+    parser.add_argument("--related", action="store_true", help="with --json: unlinked pairs")
+    parser.add_argument("--limit", type=int, default=10, metavar="N")
     args = parser.parse_args(argv)
+    if args.related and not args.json:
+        parser.error("--related requires --json")
+    if args.limit < 1:
+        parser.error("--limit must be a positive integer")
     try:
         root = find_data_directory(args.data, os.environ, Path.cwd())
         config = load_syntopica_config(root, os.environ)
     except (DataDirectoryNotFoundError, InvalidSyntopicaConfigError) as error:
         print(str(error), file=sys.stderr)
         return 1
+    if args.json:
+        found = scan_pages(config.index.parent, ordered_page_directories(config.pages))
+        document = related_document(found, args.limit) if args.related else graph_document(found)
+        print(json.dumps(document, ensure_ascii=False))
+        return 0
     output = config.index.with_name("graph.html")
-    if output.is_symlink() or output == config.index or not output.resolve().is_relative_to(root):
+    unsafe = output.is_symlink() or output == config.index
+    if not args.no_html and (unsafe or not output.resolve().is_relative_to(root)):
         print("Graph output must be a separate file inside the data directory", file=sys.stderr)
         return 1
     pages = scan_pages(config.index.parent, ordered_page_directories(config.pages))
@@ -67,12 +83,13 @@ def main(argv: list[str] | None = None) -> int:
         "orphans": orphans,
     }
 
-    template = (Path(__file__).resolve().parent / "viewer.html").read_text(encoding="utf-8")
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(
-        template.replace("/*__DATA__*/", json.dumps(data, ensure_ascii=False)),
-        encoding="utf-8",
-    )
+    if not args.no_html:
+        template = (Path(__file__).resolve().parent / "viewer.html").read_text(encoding="utf-8")
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(
+            template.replace("/*__DATA__*/", json.dumps(data, ensure_ascii=False)),
+            encoding="utf-8",
+        )
     indexed = {
         t.strip()
         for t in LINK.findall(config.index.read_text(encoding="utf-8"))
@@ -83,7 +100,8 @@ def main(argv: list[str] | None = None) -> int:
         f"pages {len(nodes)}  links {len(edges)}  orphans {len(orphans)}  "
         f"dangling {len(dangling_pairs)}  unindexed {len(unindexed)}"
     )
-    print(f"wrote {output}")
+    if not args.no_html:
+        print(f"wrote {output}")
     for source, target in dangling_pairs:
         print(f"  dangling: {source} -> [[{target}]]")
     for pid in unindexed:
