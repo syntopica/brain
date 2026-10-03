@@ -29,6 +29,16 @@ against.
 - **`brain doctor`** answers whether this instance is set up: configured paths
   present, repositories where the configuration says, the API versions
   supported, the executables and credentials the commands need.
+- **Machine-readable output** for a dashboard or a script. Each document carries
+  `"schemaVersion": 1` and exits 0 once it is printed; findings are fixed codes,
+  never messages, so a reader can store them without page content.
+  `brain lint --json` gives `issues` (`page`, `code`) and `indexStale`;
+  `brain doctor --json` gives `checks` (`name`, `ok`, `code`);
+  `brain graph --json --no-html` gives nodes (`id`, `type`, `degree`), edges,
+  orphans and dangling links and writes nothing; `brain graph --json --related
+  --limit N` gives the top N related-but-unlinked pairs; `brain page --json --id
+  <dir>/<page>` gives one page's frontmatter, body (capped at 1 MiB) and links,
+  and refuses any id outside the configured page directories.
 - **`tools/eval`** measures retrieval over your own wiki: a query set, keyword
   and PageRank scoring, and recall@k, so a change to the page conventions can be
   judged rather than argued about.

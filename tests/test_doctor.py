@@ -190,7 +190,7 @@ def test_doctor_says_keyword_only_when_no_atrium_engine_is_configured(tmp_path: 
     root = make_data_directory(tmp_path)
     config = load_syntopica_config(root, {})
     assert config.atrium_path is None
-    passed, message = doctor_retrieval(config)
+    passed, message, _ = doctor_retrieval(config)
     assert passed
     assert "keyword only" in message
 
@@ -204,7 +204,7 @@ def test_doctor_reports_semantic_once_atrium_is_configured(tmp_path: Path) -> No
     document = json.loads((root / "syntopica.config.json").read_text())
     document["engines"]["atrium"] = {"path": "../engine-atrium", "apiVersion": 1}
     (root / "syntopica.config.json").write_text(json.dumps(document))
-    passed, message = doctor_retrieval(load_syntopica_config(root, {}))
+    passed, message, _ = doctor_retrieval(load_syntopica_config(root, {}))
     assert passed
     assert "semantic (atrium configured at" in message
     assert "atrium status" in message
