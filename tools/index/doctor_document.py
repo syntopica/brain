@@ -9,13 +9,19 @@ from tools.index.doctor_checks import doctor_checks
 SCHEMA_VERSION = 1
 
 
-def doctor_document(root: Path, environ: Mapping[str, str]) -> dict[str, Any]:
+def doctor_document(
+    root: Path, environ: Mapping[str, str], skip: frozenset[str] = frozenset()
+) -> dict[str, Any]:
     """Every check as `name`, `ok` and `code`; the messages are left out.
 
     A message can name a configured path or an executable; a code cannot, so a
     reader may store and display this document without carrying instance data.
+    A skipped check still appears, passing with code `skipped`.
     """
-    checks = doctor_checks(root, environ)
+    checks = tuple(
+        (True, message, "skipped") if message.partition(":")[0] in skip else (passed, message, code)
+        for passed, message, code in doctor_checks(root, environ)
+    )
     return {
         "schemaVersion": SCHEMA_VERSION,
         "ok": all(passed for passed, _, _ in checks),
