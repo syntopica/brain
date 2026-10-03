@@ -4,6 +4,7 @@ import os
 import re
 from pathlib import Path
 
+from tools.graph.directory_type import directory_type
 from tools.graph.frontmatter_sources import frontmatter_sources
 from tools.graph.page import Page
 from tools.graph.parse_frontmatter import parse_frontmatter
@@ -36,7 +37,7 @@ def scan_pages(root: Path, directories: tuple[Path, ...]) -> dict[str, Page]:
                 "id": pid,
                 "dir": d,
                 "title": fm.get("title", f.stem),
-                "type": fm.get("type", d.rstrip("s")),
+                "type": fm.get("type", directory_type(d)),
                 "updated": fm.get("updated", ""),
                 "sources": frontmatter_sources(text),
                 "targets": targets,

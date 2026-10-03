@@ -122,15 +122,10 @@ def test_a_page_without_frontmatter_falls_back_to_its_stem_and_directory(
     assert page["updated"] == ""
 
 
-def test_the_business_directory_defaults_to_a_misspelt_type(
+def test_the_business_directory_defaults_to_the_business_type(
     build: ModuleType, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Today's behaviour, recorded rather than fixed: see the report.
-
-    The fallback is `d.rstrip("s")`, which strips *every* trailing `s` rather
-    than one, so a business page with no explicit `type:` is typed `busine`.
-    The viewer filters on this value.
-    """
+    """A page with no `type:` takes its directory's singular type (`directory_type`)."""
     _write(tmp_path, "business/acme", "body\n")
     assert (
         build.scan_pages(
@@ -139,7 +134,7 @@ def test_the_business_directory_defaults_to_a_misspelt_type(
                 tmp_path / name for name in ("projects", "business", "people", "topics", "personal")
             ),
         )["business/acme"]["type"]
-        == "busine"
+        == "business"
     )
 
 
