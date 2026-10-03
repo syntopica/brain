@@ -14,6 +14,7 @@ from tools.index.brain_page import brain_page
 from tools.index.data_directory_not_found_error import DataDirectoryNotFoundError
 from tools.index.doctor_document import doctor_document
 from tools.index.doctor_report import doctor_report
+from tools.index.doctor_skip_arguments import doctor_skip_arguments
 from tools.index.find_data_directory import find_data_directory
 from tools.index.invalid_syntopica_config_error import InvalidSyntopicaConfigError
 from tools.index.lint_document import lint_document
@@ -29,12 +30,18 @@ def brain_cli(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         root = find_data_directory(args.data, os.environ, Path.cwd())
-        if args.command in {"lint", "doctor"} and args.arguments not in ([], ["--json"]):
-            parser.error(f"{args.command} accepts only --json")
-        as_json = args.arguments == ["--json"]
+        if args.command == "lint" and args.arguments not in ([], ["--json"]):
+            parser.error("lint accepts only --json")
+        as_json = args.arguments[:1] == ["--json"]
         if args.command == "doctor" and as_json:
-            print(json.dumps(doctor_document(root, os.environ)))
+            try:
+                skip = doctor_skip_arguments(args.arguments)
+            except ValueError as error:
+                parser.error(str(error))
+            print(json.dumps(doctor_document(root, os.environ, skip)))
             return 0
+        if args.command == "doctor" and args.arguments:
+            parser.error("doctor accepts only --json [--skip NAME]...")
         if args.command == "doctor":
             return doctor_report(root, os.environ)
         config = load_syntopica_config(root, os.environ)

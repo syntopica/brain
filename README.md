@@ -33,7 +33,9 @@ against.
   `"schemaVersion": 1` and exits 0 once it is printed; findings are fixed codes,
   never messages, so a reader can store them without page content.
   `brain lint --json` gives `issues` (`page`, `code`) and `indexStale`;
-  `brain doctor --json` gives `checks` (`name`, `ok`, `code`);
+  `brain doctor --json` gives `checks` (`name`, `ok`, `code`), and
+  `--skip NAME` (repeatable) reports a check as passing with code `skipped`,
+  for a poller that deliberately runs without credentials;
   `brain graph --json --no-html` gives nodes (`id`, `type`, `degree`), edges,
   orphans and dangling links and writes nothing; `brain graph --json --related
   --limit N` gives the top N related-but-unlinked pairs; `brain page --json --id

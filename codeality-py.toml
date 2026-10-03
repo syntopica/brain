@@ -12,6 +12,7 @@ test-max-file-lines = 300
 [roles]
 data = [
   "tools/eval/stop_words.py",
+  "tools/index/doctor_check_names.py",
   "tools/index/syntopica_config_schema.py",
 ]
 registry = []

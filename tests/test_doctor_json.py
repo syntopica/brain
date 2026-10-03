@@ -67,3 +67,27 @@ def test_doctor_rejects_any_other_argument(tmp_path: Path) -> None:
     data = make_data_directory(tmp_path)
     with pytest.raises(SystemExit):
         brain_cli(["--data", str(data), "doctor", "--verbose"])
+
+
+def test_skipped_check_reads_ok_with_skipped_code(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    data = make_data_directory(tmp_path)
+    origin = {"CAPTURE_SERVICE_ORIGIN": "https://capture.example.test"}
+    with patch(WHICH, return_value="/synthetic/bin/tool"), patch.dict("os.environ", origin):
+        assert brain_cli(["--data", str(data), "doctor", "--json", "--skip", "credentials"]) == 0
+    document = json.loads(capsys.readouterr().out)
+    codes = {check["name"]: (check["ok"], check["code"]) for check in document["checks"]}
+    assert codes["credentials"] == (True, "skipped")
+    assert document["ok"] is True
+
+
+def test_skip_needs_json_and_a_known_check(tmp_path: Path) -> None:
+    data = make_data_directory(tmp_path)
+    for arguments in (
+        ["--skip", "credentials"],
+        ["--json", "--skip"],
+        ["--json", "--skip", "nope"],
+    ):
+        with pytest.raises(SystemExit):
+            brain_cli(["--data", str(data), "doctor", *arguments])

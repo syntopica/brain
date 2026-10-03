@@ -1,15 +1,5 @@
 # Open work
 
-- [ ] **`brain doctor --json` reports `credentials token_absent` when run by a
-  read-only health poller.** `tools/index/doctor_credentials.py` requires
-  `CAPTURE_TOKEN` in the environment whenever capture is configured; a poller
-  that runs `doctor --json` under an environment allowlist (no credentials,
-  by design) always sees `ok: false`, so its health signal is permanently
-  degraded. Credentials must not be copied into the poller's config. Smallest
-  step: let `doctor` resolve the token the way capture commands do (a token
-  file named by the instance config) and report `ok` when that file is
-  readable, falling back to the environment variable.
-
 - [ ] **`brain graph --json --no-html` p95 is at the 2 s polling budget.**
   Measured 2026-10-03 on the full instance under load average 29-53: p95
   1.96 s and 2.15 s over two sets of 10 runs, max RSS 28 MB, CPU under 0.8 s
