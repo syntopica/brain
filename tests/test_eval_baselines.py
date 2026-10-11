@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pytest
 
+from tests.fixtures.make_data_directory import make_data_directory
 from tests.tool_paths import TOOLS_ROOT
 
 EVAL_ROOT = TOOLS_ROOT / "eval"
@@ -354,12 +355,11 @@ def harness(tmp_path):
     module = _load("run", EVAL_ROOT / "run.py")
 
     def build(pages: dict[str, str], queries: str):
-        root = _wiki(tmp_path, pages)
+        root = make_data_directory(tmp_path, pages)
         query_file = tmp_path / "queries.toml"
         query_file.write_text(queries, encoding="utf-8")
-        module.ROOT = root
         module.QUERIES = query_file
-        return module
+        return lambda: module.main(["--data", str(root)])
 
     return build
 
@@ -369,7 +369,7 @@ def test_the_runner_reports_both_baselines_and_exits_zero(harness, capsys) -> No
         {"topics/acme.md": "---\ntitle: Acme\n---\nthe invoicing tool"},
         '[[query]]\nquestion = "how is acme set up"\nexpected_pages = ["topics/acme"]\n',
     )
-    assert module.main() == 0
+    assert module() == 0
     out = capsys.readouterr().out
     assert "1 questions, recall@5" in out
     assert "keyword: 1.00" in out
@@ -381,7 +381,7 @@ def test_a_missed_question_is_printed_with_what_was_returned(harness, capsys) ->
         {"topics/acme.md": "---\ntitle: Acme\n---\nthe invoicing tool", "topics/b.md": "b"},
         '[[query]]\nquestion = "how is acme set up"\nexpected_pages = ["topics/b"]\n',
     )
-    module.main()
+    module()
     out = capsys.readouterr().out
     assert "keyword missed topics/b: how is acme set up" in out
     assert "returned: topics/acme" in out
@@ -393,7 +393,7 @@ def test_a_refusal_question_the_baseline_answers_anyway_is_named(harness, capsys
         {"topics/acme.md": "---\ntitle: Acme\n---\nthe invoicing tool"},
         '[[query]]\nquestion = "how is acme set up"\nexpected_pages = []\n',
     )
-    module.main()
+    module()
     out = capsys.readouterr().out
     assert "(nothing should have been returned)" in out
 
@@ -403,7 +403,7 @@ def test_a_question_the_wiki_cannot_answer_returns_nothing(harness, capsys) -> N
         {"topics/acme.md": "---\ntitle: Acme\n---\nthe invoicing tool"},
         '[[query]]\nquestion = "cirbe deferral"\nexpected_pages = []\n',
     )
-    assert module.main() == 0
+    assert module() == 0
     out = capsys.readouterr().out
     assert "keyword: 1.00" in out
     assert "pagerank: 1.00" in out
@@ -424,6 +424,33 @@ def test_pagerank_is_seeded_from_the_keyword_hits_not_the_whole_corpus(harness, 
         pages,
         '[[query]]\nquestion = "cirbe risk report"\nexpected_pages = ["topics/cirbe"]\n',
     )
-    module.main()
+    module()
     out = capsys.readouterr().out
     assert "pagerank: 1.00" in out
+
+
+def test_the_runner_takes_the_instance_root_every_other_command_takes(
+    tmp_path, monkeypatch, capsys
+) -> None:
+    """SYNTOPICA_DATA names the instance root, as for `brain find`, not a pages root.
+
+    Pointed at the instance, the old runner looked for `topics/` beside
+    `syntopica.config.json`, found no page, and scored only the refusal rows.
+    """
+    module = _load("run", EVAL_ROOT / "run.py")
+    root = make_data_directory(tmp_path, {"topics/acme.md": "---\ntitle: Acme\n---\ninvoicing"})
+    module.QUERIES = tmp_path / "queries.toml"
+    module.QUERIES.write_text(
+        '[[query]]\nquestion = "acme invoicing"\nexpected_pages = ["topics/acme"]\n',
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("SYNTOPICA_DATA", str(root))
+    assert module.main([]) == 0
+    assert "keyword: 1.00" in capsys.readouterr().out
+
+
+def test_the_runner_without_an_instance_says_so(tmp_path, monkeypatch, capsys) -> None:
+    module = _load("run", EVAL_ROOT / "run.py")
+    monkeypatch.delenv("SYNTOPICA_DATA", raising=False)
+    assert module.main(["--data", str(tmp_path)]) == 1
+    assert "No syntopica.config.json" in capsys.readouterr().err
