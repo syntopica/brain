@@ -55,7 +55,7 @@ def load_syntopica_config(root: Path, environ: Mapping[str, str]) -> SyntopicaCo
     atrium_path = next(iter(paths[("engines", "atrium", "path")]), None)
     declared = tuple(
         paths[("engines", name, "path")][0]
-        for name in ("brain", "clips", "atrium", "agents")
+        for name in ("brain", "clips", "atrium", "agents", "scribe")
         if paths[("engines", name, "path")]
     )
     validate_syntopica_git_roots(root, archive, declared)

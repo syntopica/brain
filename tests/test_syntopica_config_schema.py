@@ -189,10 +189,11 @@ def test_engines_require_only_brain() -> None:
         "clips",
         "atrium",
         "agents",
+        "scribe",
     }
 
 
-@pytest.mark.parametrize("engine", ["clips", "atrium", "agents"])
+@pytest.mark.parametrize("engine", ["clips", "atrium", "agents", "scribe"])
 def test_optional_engine_entries_share_the_checkout_shape(engine: str) -> None:
     document = example_document()
     engines = cast(dict[str, object], document["engines"])
