@@ -9,6 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
+from tools.graph.build import main as graph_main
 from tools.index.brain_lint import brain_lint
 from tools.index.brain_page import brain_page
 from tools.index.data_directory_not_found_error import DataDirectoryNotFoundError
@@ -44,18 +45,26 @@ def brain_cli(argv: list[str] | None = None) -> int:
             parser.error("doctor accepts only --json [--skip NAME]...")
         if args.command == "doctor":
             return doctor_report(root, os.environ)
+        if args.command in ("index", "graph", "find"):
+            # These load and validate the configuration themselves. Loading it
+            # here as well ran the git root and remote checks twice, about 20
+            # git processes each: that and a second interpreter put `brain graph
+            # --json --no-html` at p95 2.15 s against `graph.py` alone at 0.73 s
+            # and a 2 s polling budget (measured 2026-10-03). Graph runs
+            # in-process because it is the command polled.
+            if args.command == "graph":
+                return graph_main(["--data", str(root), *args.arguments])
+            script = Path(__file__).resolve().parents[1] / args.command / "build.py"
+            return subprocess.run(
+                [sys.executable, str(script), "--data", str(root), *args.arguments], check=False
+            ).returncode
         config = load_syntopica_config(root, os.environ)
         if args.command == "lint" and as_json:
             print(json.dumps(lint_document(config), ensure_ascii=False))
             return 0
         if args.command == "lint":
             return brain_lint(config)
-        if args.command == "page":
-            return brain_page(config, args.arguments)
-        script = Path(__file__).resolve().parents[1] / args.command / "build.py"
-        return subprocess.run(
-            [sys.executable, str(script), "--data", str(root), *args.arguments], check=False
-        ).returncode
+        return brain_page(config, args.arguments)
     except (DataDirectoryNotFoundError, InvalidSyntopicaConfigError) as error:
         print(str(error), file=sys.stderr)
         return 1
