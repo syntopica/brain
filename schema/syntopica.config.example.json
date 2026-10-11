@@ -35,8 +35,8 @@
       "path": "../syntopica-atrium",
       "apiVersion": 1
     },
-    "agents": {
-      "path": "../syntopica-agents",
+    "scribe": {
+      "path": "../syntopica-scribe",
       "apiVersion": 1
     }
   },

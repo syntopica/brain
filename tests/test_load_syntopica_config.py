@@ -329,6 +329,7 @@ def test_optional_engines_resolve_when_present_and_are_empty_when_absent(
     assert paths[("engines", "atrium", "path")] == (tmp_path / "engine-atrium",)
     assert paths[("engines", "clips", "path")] == ()
     assert paths[("engines", "agents", "path")] == ()
+    assert paths[("engines", "scribe", "path")] == ()
 
 
 def test_brain_only_instance_loads_without_a_clips_engine(

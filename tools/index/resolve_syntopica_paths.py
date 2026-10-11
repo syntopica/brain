@@ -25,6 +25,7 @@ def resolve_syntopica_paths(
         ("engines", "clips", "path"),
         ("engines", "atrium", "path"),
         ("engines", "agents", "path"),
+        ("engines", "scribe", "path"),
         ("newsletter", "acceptedSenders"),
         ("newsletter", "rejectedSenders"),
         ("newsletter", "rejectedBookingSenders"),
@@ -40,6 +41,7 @@ def resolve_syntopica_paths(
         ("engines", "clips", "path"),
         ("engines", "atrium", "path"),
         ("engines", "agents", "path"),
+        ("engines", "scribe", "path"),
     }
     result: dict[tuple[str, ...], tuple[Path, ...]] = {}
     for field in fields:
