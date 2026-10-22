@@ -10,6 +10,7 @@ from tools.index.doctor_executables import doctor_executables
 from tools.index.doctor_paths import doctor_paths
 from tools.index.doctor_repositories import doctor_repositories
 from tools.index.doctor_retrieval import doctor_retrieval
+from tools.index.git_inspection_timeout_error import GitInspectionTimeoutError
 from tools.index.invalid_syntopica_config_error import InvalidSyntopicaConfigError
 from tools.index.load_syntopica_config import load_syntopica_config
 
@@ -23,6 +24,8 @@ def doctor_checks(root: Path, environ: Mapping[str, str]) -> tuple[tuple[bool, s
     """
     try:
         config = load_syntopica_config(root, environ)
+    except GitInspectionTimeoutError:
+        return ((False, "configuration: Git inspection timed out", "git_inspection_timeout"),)
     except InvalidSyntopicaConfigError as error:
         return ((False, f"configuration: {error}", "config_invalid"),)
     except (OSError, ValueError):
@@ -43,5 +46,8 @@ def doctor_checks(root: Path, environ: Mapping[str, str]) -> tuple[tuple[bool, s
         doctor_credentials(config, environ),
     )
     if config.archive is not None:
-        checks += (doctor_archive(config.archive),)
+        try:
+            checks += (doctor_archive(config.archive),)
+        except GitInspectionTimeoutError:
+            checks += ((False, "archive: Git inspection timed out", "git_inspection_timeout"),)
     return checks
