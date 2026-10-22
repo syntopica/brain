@@ -6,6 +6,7 @@ import os
 import subprocess
 from pathlib import Path
 
+from tools.index.git_inspection_timeout_error import GitInspectionTimeoutError
 from tools.index.invalid_syntopica_config_error import InvalidSyntopicaConfigError
 
 
@@ -20,5 +21,7 @@ def run_syntopica_git(root: Path, arguments: tuple[str, ...]) -> subprocess.Comp
             timeout=5,
             env={"PATH": os.defpath, "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull},
         )
-    except (OSError, subprocess.TimeoutExpired, UnicodeError):
+    except subprocess.TimeoutExpired:
+        raise GitInspectionTimeoutError("Git inspection timed out") from None
+    except (OSError, UnicodeError):
         raise InvalidSyntopicaConfigError("Cannot inspect configured Git repository") from None

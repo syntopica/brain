@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+from tools.index.git_inspection_timeout_error import GitInspectionTimeoutError
 from tools.index.invalid_syntopica_config_error import InvalidSyntopicaConfigError
 from tools.index.syntopica_config import SyntopicaConfig
 from tools.index.validate_syntopica_git_roots import validate_syntopica_git_roots
@@ -12,6 +13,8 @@ def doctor_repositories(root: Path, config: SyntopicaConfig) -> tuple[bool, str,
     engines = tuple(path for path in (config.brain_path, config.clips_path) if path is not None)
     try:
         validate_syntopica_git_roots(root.resolve(), config.archive, engines)
+    except GitInspectionTimeoutError:
+        return False, "repositories: Git inspection timed out", "git_inspection_timeout"
     except InvalidSyntopicaConfigError:
         return False, "repositories: invalid Git identities or remotes", "git_identity_invalid"
     return True, "repositories: valid Git identities", "ok"
