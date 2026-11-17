@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-a6a83ba9-47bc-4cfd-9748-b0cb7fddce40",
+  "title": "Update the locked certificate trust bundle",
+  "state": "done",
+  "category": "dependency-security",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-22",
+  "result": "Update only the certifi package record from 2026.7.22 to 2026.10.19, addressing GHSA-6q48-6c7w-9gw2 and PYSEC-2026-4320. Preserve all other package records, sources, lock metadata and policy. Installed instances require separate verification.",
+  "evidence": [
+    "Structural TOML comparison found exactly one changed package record and no added or removed packages. The official wheel SHA256 is 42d35340cc5b9ba78e818ddbff0c5b1c2b779de448a340fd1b989f5fa8670e1b. The source-matched locked environment passed python -m pytest -q (636 passed, five existing skips) and codeality-py gate --json (all seven required stages); pip-audit checked 45 distributions with zero vulnerabilities and no waivers."
+  ]
+}

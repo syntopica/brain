@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-6fd46282-71f9-4808-825c-fe2b30baf8ff",
+  "title": "Strip YAML block-scalar indicators from page summaries",
+  "state": "pending",
+  "category": "index",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "created": "2026-10-28",
+  "notes": [
+    "- Observation: a page whose frontmatter stores `summary: >-` (or `>`, `|`, `|-`) is listed in the generated index as `— >- <text>`, because `folded_value` joins the continuation lines but keeps the indicator, and `summary_of` only removes quotes.",
+    "- Next step: in `tools/index/summary_of.py` (or `folded_value.py`), drop a leading block indicator (`[>|][+-]?`) before unquoting, and add a test with a folded summary."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-a593fc41-9529-4579-a51a-3d087ddeca17",
+  "title": "Distinguish operational Git deadlines from invalid repository settings",
+  "state": "done",
+  "category": "doctor-git-inspection-timeout-classification",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-22",
+  "result": "Report a sanitized git_inspection_timeout code for configuration, repository recheck and archive deadlines. Preserve the five-second deadline, fail-closed repository validation and ordinary invalid-identity codes. Configured-instance health still needs its own live check.",
+  "evidence": [
+    "Eight focused synthetic and invalid-schema checks passed after reproducing the repository-recheck misclassification. The source-matched isolated doctor subset passed all fourteen tests. In the exact locked wheel-only environment, python -m pytest -q passed 636 tests with five existing skips, and codeality-py gate --json passed all seven required stages. Independent review found no remaining issues. Initial Git-root and missing-uv verification setup failures were retained and corrected without changing assertions or timeouts."
+  ]
+}
