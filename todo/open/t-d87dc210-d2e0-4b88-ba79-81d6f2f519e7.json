@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-d87dc210-d2e0-4b88-ba79-81d6f2f519e7",
+  "title": "Make bin/brain run under the engine's venv, not the system python3",
+  "state": "pending",
+  "category": "general",
+  "type": "bug",
+  "priority": "high",
+  "created": "2026-11-23",
+  "notes": [
+    "Found 2026-11-23 installing a fresh instance on a second macOS machine (Darwin 27.2, uv 0.11, pnpm 11) following syntopica AGENTS.md.",
+    "bin/brain is '#!/usr/bin/env python3' and re-execs sys.executable. On stock macOS the first python3 on PATH is /usr/bin/python3 (3.9), so every command dies at import: tools/graph/resolve_bare_target.py uses 'str | None' -> TypeError: unsupported operand type(s) for |. pyproject requires 3.12 but the launcher never selects the venv that 'uv sync' built.",
+    "Workaround in use: a ~/.local/bin/brain wrapper that execs engines/brain/.venv/bin/python tools/index/brain_cli.py (same as the MBP wrapper)."
+  ],
+  "done_when": [
+    "engines/brain/bin/brain doctor passes on a machine whose PATH python3 is 3.9 (prefer .venv/bin/python next to the checkout, fall back to 'uv run --project')"
+  ]
+}
