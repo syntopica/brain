@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-d87dc210-d2e0-4b88-ba79-81d6f2f519e7",
   "title": "Make bin/brain run under the engine's venv, not the system python3",
-  "state": "pending",
+  "state": "done",
   "category": "general",
   "type": "bug",
   "priority": "high",
@@ -14,5 +14,10 @@
   ],
   "done_when": [
     "engines/brain/bin/brain doctor passes on a machine whose PATH python3 is 3.9 (prefer .venv/bin/python next to the checkout, fall back to 'uv run --project')"
+  ],
+  "closed": "2026-11-23",
+  "result": "Make bin/brain run under the engine's venv, not the system python3",
+  "evidence": [
+    "defbdb7: bin/brain execs .venv/bin/python, falls back to uv run --project. With PATH=/usr/bin:/bin (python3 3.9.6) a fresh clone ran index, lint and doctor; uv fallback verified with .venv moved away; pytest 636 passed."
   ]
 }
