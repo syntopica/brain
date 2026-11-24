@@ -108,6 +108,16 @@ def test_a_doubled_quote_inside_a_single_quoted_summary_becomes_one(build, wiki)
     assert summary_of(_page(wiki, "p", "summary: 'It''s here'")) == "It's here"
 
 
+@pytest.mark.parametrize("indicator", [">", ">-", ">+", "|", "|-", "|+"])
+def test_a_block_scalar_summary_is_its_text_without_the_indicator(build, wiki, indicator) -> None:
+    page = _page(wiki, "p", f"summary: {indicator}\n  first line\n  second line\ntype: topic")
+    assert summary_of(page) == "first line second line"
+
+
+def test_a_plain_summary_is_unchanged(build, wiki) -> None:
+    assert summary_of(_page(wiki, "p", "summary: just text > here")) == "just text > here"
+
+
 def test_a_double_quoted_summary_loses_its_quotes_but_keeps_its_escapes(build, wiki) -> None:
     """Today's behaviour: `\\"` is not decoded, unlike YAML.
 

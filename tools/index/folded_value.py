@@ -1,5 +1,9 @@
 """Read one frontmatter scalar, however Prettier decided to wrap it."""
 
+import re
+
+_BLOCK_INDICATOR = re.compile(r"[>|][+-]?")
+
 
 def folded_value(block: str, key: str) -> str:
     """The value of ``key``, joined back up if it spans several lines.
@@ -13,6 +17,9 @@ def folded_value(block: str, key: str) -> str:
 
     A line indented under a key can only be that key's continuation in YAML, so
     every indented line up to the next column-0 key belongs to the value.
+
+    A block scalar (`>`, `|`, with an optional `+` or `-`) is a header, not
+    content: its lines are the value, joined into one line like any other.
     """
     lines = block.split("\n")
     for index, line in enumerate(lines):
@@ -23,5 +30,7 @@ def folded_value(block: str, key: str) -> str:
             if not following[:1].isspace():
                 break
             parts.append(following.strip())
+        if _BLOCK_INDICATOR.fullmatch(parts[0]):
+            parts.pop(0)
         return " ".join(part for part in parts if part)
     return ""
