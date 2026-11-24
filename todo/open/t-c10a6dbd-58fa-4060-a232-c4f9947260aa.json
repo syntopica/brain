@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-c10a6dbd-58fa-4060-a232-c4f9947260aa",
+  "title": "Decide how a shared brain is declared so its page ids do not depend on where each instance mounts it",
+  "state": "pending",
+  "category": "general",
+  "type": "decision",
+  "priority": "normal",
+  "kind": "decision",
+  "created": "2026-11-24",
+  "created_by": "agent:claude",
+  "notes": [
+    "Page ids carry the path from the index directory, so the same page is projects/vibra-dmx in one instance and shared/vibra/projects/vibra-dmx in another, and a [[folder/name]] link resolves in one and dangles in the next. The 2026-11-24 trial worked around it with bare [[name]] links in both the shared repository and the 21 pages of the MBP wiki that link into it, which only holds while filenames stay unique across every mounted brain."
+  ]
+}
