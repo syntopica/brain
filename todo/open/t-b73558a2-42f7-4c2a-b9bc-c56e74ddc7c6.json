@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-b73558a2-42f7-4c2a-b9bc-c56e74ddc7c6",
+  "title": "Report a bare [[name]] link that matches no page: lint and graph count it as neither resolved nor dangling",
+  "state": "pending",
+  "category": "general",
+  "type": "bug",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-24",
+  "created_by": "agent:claude",
+  "notes": [
+    "Found mounting Vibra-Lab/brain-vibra on 2026-11-24. Its pages link private pages of the author's instance by name ([[access-map]], [[companies]]); on the office instance, where those pages do not exist, 'brain lint' prints 0 issues and 'brain graph' dangling 0. The same links written with a folder were reported as dangling."
+  ],
+  "done_when": [
+    "lint lists an unresolved bare link, in a way an instance mounting a shared brain can tell from a link broken inside its own pages."
+  ]
+}
